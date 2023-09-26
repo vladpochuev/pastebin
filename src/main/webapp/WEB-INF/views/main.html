@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/main.css}" />
+    <title>Pastebin</title>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="content">
+        <div class="container">
+            <div class="main">
+                <div class="main__row">
+                    <div class="create">
+                        <form th:method="POST" th:action="@{/}" th:object="${bin}">
+                            <h2 class="heading">Create</h2>
+                            <div class="create__title">
+                                <input type="text" th:field="*{title}" id="create__title_input">
+                                <label for="create__title_input"></label>
+                            </div>
+                            <div class="create__text">
+                                <textarea th:field="*{text}" id="create__textarea"></textarea>
+                                <label for="create__textarea"></label>
+                            </div>
+
+                            <div class="button">
+                                <input type="submit" value="Submit">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="get">
+                        <form method="POST" action="/redirected">
+                            <h2 class="heading">Find</h2>
+                            <div class="get__title">
+                                <input type="text" id="get__input" name="hash">
+                                <label for="get__input"></label>
+                            </div>
+
+                            <div class="button">
+                                <input type="submit" value="Find">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
