@@ -65,5 +65,11 @@
     margin-top: 10px;
 }
 
+.get__option {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
 
 
