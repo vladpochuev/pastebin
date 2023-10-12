@@ -20,7 +20,7 @@ public class MainController {
     @GetMapping()
     public String getMenu(Model model) {
         model.addAttribute("bin", new Bin());
-        return "main";
+        return "index";
     }
 
     @PostMapping()

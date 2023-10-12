@@ -1,0 +1,150 @@
+* {
+    box-sizing: content-box;
+}
+
+body {
+    margin: 0;
+}
+
+.coords {
+    position: absolute;
+    z-index: 100;
+    text-align: center;
+    width: 100%;
+}
+
+.ui-wrapper {
+    display: flex;
+    justify-content: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.zoom-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+
+.zoom-wrapper__row {
+    display: flex;
+}
+
+.zoom-wrapper__row > * {
+    margin: 0 10px 12px 0;
+}
+
+.zoom-wrapper__row > button {
+    width: 24px;
+    height: 24px;
+    outline: none;
+    font-size: 18px;
+    background-color: white;
+    border: 1px solid black;
+    cursor: pointer;
+    pointer-events: all;
+    user-select: none;
+}
+
+.minimap {
+    border: 1px solid blue;
+    position: absolute !important;
+    top: 20px;
+    left: 20px;
+}
+.design {
+    border: 1px solid black;
+}
+
+.new-bin-wrapper {
+    position: relative;
+    width: 300px;
+    height: 75px;
+}
+
+#new-bin-checkbox {
+    display: none;
+}
+
+#new-bin-label #img {
+    background: url("../images/plus_icon.png") no-repeat center;
+    height: 100%;
+    width: 100%;
+}
+
+
+#new-bin-label {
+    display: block;
+    width: 100%;
+    height: 75px;
+    margin: -2px;
+    background: rgb(253,233,16);
+    background: linear-gradient(90deg, rgba(253,233,16,1) 0%, rgba(255,216,0,1) 43%, rgba(255,204,0,1) 100%);
+    border-bottom: 4px solid #ffba00;
+    border-radius: 30px 0 0 0;
+    bottom: 0;
+}
+
+#new-bin-menu {
+    display: block;
+    position: absolute;
+    height: 75px;
+    margin: -2px;
+    background: rgb(253,233,16);
+    background: linear-gradient(90deg, rgba(253,233,16,1) 0%, rgba(255,216,0,1) 43%, rgba(255,204,0,1) 100%);
+    border: 1px solid #ffbf00;
+    border-radius: 30px 0 0 0;
+    width: 100%;
+    bottom: 2px;
+    overflow: hidden;
+    transition: height 0.25s 0.1s ease-out;
+}
+
+input:checked ~ #new-bin-menu {
+    display: block;
+    height: 450px;
+}
+
+#new-bin-content {
+    height: 100%;
+    background: rgb(253,233,16);
+    background: linear-gradient(90deg, rgba(253,233,16,1) 0%, rgba(255,216,0,1) 43%, rgba(255,204,0,1) 100%);
+}
+
+.heading {
+    margin-top: 50px;
+    text-align: center;
+}
+
+#create__title_input, #get__input {
+    width: 100%;
+    margin: 10px 0 0 0;
+}
+
+#create__textarea {
+    resize: none;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.get__option {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.create__text {
+    position: relative;
+    flex: 0.7;
+}
+
+#create__textarea {
+    height: 100px;
+}

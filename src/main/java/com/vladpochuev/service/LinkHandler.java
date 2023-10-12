@@ -19,7 +19,7 @@ public class LinkHandler extends Thread {
         try {
             Long amountOfTime = getAmountOfTime(this.amountOfTime);
             if(amountOfTime == null) return;
-            System.out.println("bin " + binId + " was added to queue for " + amountOfTime);
+            System.out.println("bin " + binId + " was added to queue for " + amountOfTime + " ms");
             Thread.sleep(amountOfTime);
             System.out.println("bin " + binId + " was removed");
             binDAO.delete(binId);

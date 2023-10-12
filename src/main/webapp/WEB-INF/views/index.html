@@ -1,17 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/index.css}">
     <title>Title</title>
 </head>
 <body>
 
 <h1 class="coords"></h1>
 <canvas id="canvas"></canvas>
+<!--<canvas id="minimap" width="130" height="130" style="position: absolute; top: 10px; left: 10px;"></canvas>-->
+<div class="ui-wrapper">
+    <div class="zoom-wrapper">
+        <div class="zoom-wrapper__row">
+            <h3 id="zoom-level">100%</h3>
+            <button id="zoom-in" onclick="zoom(-100, window.innerWidth/2, window.innerHeight/2)">+</button>
+            <button id="zoom-out" onclick="zoom(100, window.innerWidth/2, window.innerHeight/2)">-</button>
+        </div>
+    </div>
+    <div class="new-bin-wrapper">
+        <input type="checkbox" id="new-bin-checkbox">
+        <div id="new-bin-menu">
+            <label for="new-bin-checkbox" id="new-bin-label">
+                <div id="img"></div>
+            </label>
+            <div id="new-bin-content">
+                <form th:method="POST" th:action="@{/}" th:object="${bin}">
+                    <h2 class="heading">New bin</h2>
+                    <div class="create__title">
+                        <input type="text" th:field="*{title}" id="create__title_input">
+                        <label for="create__title_input"></label>
+                    </div>
+                    <div class="create__text">
+                        <textarea th:field="*{text}" id="create__textarea"></textarea>
+                        <label for="create__textarea"></label>
+                    </div>
 
-<script src="lib/jscolor.min.js"></script>
-<script src="./lib/unpkg.com_fabric@5.3.0_dist_fabric.min.js"></script>
-<script src="index.js"></script>
+                    <div class="get__option">
+                        <select name="amountOfTime" id="get__option">
+                            <option value="INFINITE">Never</option>
+                            <option value="ONE_MINUTE">1 Minute</option>
+                            <option value="TEN_MINUTES">10 Minutes</option>
+                            <option value="ONE_HOUR">1 Hour</option>
+                            <option value="ONE_DAY">1 Day</option>
+                            <option value="ONE_WEEK">1 Week</option>
+                            <option value="ONE_MONTH">1 Month</option>
+                            <option value="SIX_MONTH">6 Month</option>
+                        </select>
+                    </div>
+
+                    <div class="button">
+                        <input type="submit" value="Submit">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/static/js/lib/jscolor.min.js}"></script>
+<script th:src="@{/static/js/lib/fabric.min.js}"></script>
+<script th:src="@{/static/js/index.js}"></script>
 </body>
 </html>
