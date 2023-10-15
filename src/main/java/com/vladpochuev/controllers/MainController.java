@@ -2,9 +2,13 @@ package com.vladpochuev.controllers;
 
 import com.vladpochuev.dao.BinDAO;
 import com.vladpochuev.model.Bin;
+import com.vladpochuev.model.BinMessage;
+import com.vladpochuev.model.BinNotification;
 import com.vladpochuev.service.HashGenerator;
 import com.vladpochuev.service.LinkHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -44,5 +48,11 @@ public class MainController {
     @PostMapping("/redirected")
     public String getHash(@RequestParam("hash") String hash) {
         return "redirect:/" + hash;
+    }
+
+    @MessageMapping("/newBin")
+    @SendTo("/topic/binNotifications")
+    public BinNotification sendBinWS(BinMessage message) {
+        return new BinNotification(message.getX(), message.getY());
     }
 }

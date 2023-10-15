@@ -16,13 +16,13 @@ const setPanEvents = (canvas) => {
         const point = getExactPoint(e)
         const coords = document.querySelector(".coords")
         coords.textContent = `(${point.x};${point.y})`
-        
+
         if(mousePressed && e.button === 1 && onField(e)) {
-                canvas.setCursor('grab')
-                let delta = new fabric.Point(e.e.movementX, e.e.movementY);
-                /*minimap.requestRenderAll();
-                updateMiniMapVP();*/
-                canvas.relativePan(delta)
+            canvas.setCursor('grab')
+            let delta = new fabric.Point(e.e.movementX, e.e.movementY);
+            /*minimap.requestRenderAll();
+            updateMiniMapVP();*/
+            canvas.relativePan(delta)
         }
     })
 
@@ -32,7 +32,7 @@ const setPanEvents = (canvas) => {
             canvas.setCursor('grab')
         } else if(e.button === 3 && e.target == null) {
             const point = getExactPoint(e)
-            createObject(point.x, point.y)
+            ws.sendMessage(point.x, point.y)
         }
     })
 
@@ -80,9 +80,9 @@ const getExactPoint = (e) => {
 const onField = (e) => {
     const point = getExactPoint(e)
     return point.x > -993
-    && point.x < 993
-    && point.y > -993
-    && point.y < 993
+        && point.x < 993
+        && point.y > -993
+        && point.y < 993
 }
 
 const createObject = (x, y) => {
@@ -107,11 +107,6 @@ const createObject = (x, y) => {
         lockMovementX: true,
         lockMovementY: true})
 
-    group.on('mousedown', e => {
-        if(e.button === 1) console.log('left click')
-        else if(e.button === 3) console.log('right click')
-    })
-
     group.on('mousemove', e => {
         canvas.setCursor('default')
     })
@@ -119,16 +114,6 @@ const createObject = (x, y) => {
     canvas.add(group)
     /*updateMiniMap()*/
 }
-
-
-const canvas = initCanvas('canvas');
-/*const minimap = new fabric.Canvas('minimap', {containerClass: 'minimap', selection: false})*/
-let mousePressed = false;
-let clusterSizeX = Math.floor(window.innerWidth / 7)
-let clusterSizeY = Math.floor(window.innerWidth / 7)
-
-canvas.renderAll()
-setPanEvents(canvas)
 
 const createGrid = (x, y) => {
     const properties = {stroke: '#c5897c', evented: false, lockMovementX: true, lockMovementY: true}
@@ -140,9 +125,19 @@ const createGrid = (x, y) => {
     }
 }
 
-createGrid(clusterSizeX, clusterSizeY)
 
+const canvas = initCanvas('canvas');
+/*const minimap = new fabric.Canvas('minimap', {containerClass: 'minimap', selection: false})*/
+let mousePressed = false;
+let clusterSizeX = Math.floor(window.innerWidth / 7)
+let clusterSizeY = Math.floor(window.innerWidth / 7)
+let ws = new WS()
+
+canvas.renderAll()
+setPanEvents(canvas)
+createGrid(clusterSizeX, clusterSizeY)
 canvas.relativePan(new fabric.Point(clusterSizeX * 3, clusterSizeY))
+ws.connect()
 /*
 
 function createCanvasEl() {

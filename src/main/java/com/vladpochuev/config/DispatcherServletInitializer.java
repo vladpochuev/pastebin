@@ -12,7 +12,7 @@ public class DispatcherServletInitializer extends AbstractAnnotationConfigDispat
     }
 
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{SpringConfig.class};
+        return new Class[]{SpringConfig.class, WebSocketConfiguration.class};
     }
 
     protected String[] getServletMappings() {
