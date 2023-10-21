@@ -15,11 +15,11 @@ class WS {
         })
     }
 
-    sendMessage(x, y) {
-        this.stompClient.send("/app/newBin", {}, JSON.stringify({x: x, y: y}))
+    sendMessage(bin) {
+        this.stompClient.send("/app/newBin", {}, JSON.stringify(bin))
     }
 
     getMessage(message) {
-        createObject(message.x, message.y)
+        createObject(message.id, message.title, message.x, message.y)
     }
 }

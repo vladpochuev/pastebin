@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BinNotification {
+    private String id;
+    private String title;
     private int x;
     private int y;
 }

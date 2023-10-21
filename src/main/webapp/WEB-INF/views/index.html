@@ -5,9 +5,9 @@
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/style.css}">
     <title>Title</title>
 </head>
-<body>
+<body oncontextmenu="return false">
 
-<h1 class="coords"></h1>
+<h1 class="current-coords"></h1>
 <canvas id="canvas"></canvas>
 <!--<canvas id="minimap" width="130" height="130" style="position: absolute; top: 10px; left: 10px;"></canvas>-->
 <div class="ui-wrapper">
@@ -25,19 +25,26 @@
                 <div id="img"></div>
             </label>
             <div id="new-bin-content">
-                <form th:method="POST" th:action="@{/}" th:object="${bin}">
+                <form id="drop-down">
                     <h2 class="heading">New bin</h2>
                     <div class="create__title">
-                        <input type="text" th:field="*{title}" id="create__title_input">
+                        <input type="text" class="title" id="create__title_input">
                         <label for="create__title_input"></label>
                     </div>
                     <div class="create__text">
-                        <textarea th:field="*{text}" id="create__textarea"></textarea>
+                        <textarea class="message" id="create__textarea" rows="8"></textarea>
                         <label for="create__textarea"></label>
                     </div>
 
-                    <div class="get__option">
-                        <select name="amountOfTime" id="get__option">
+                    <div class="coords">
+                        <label for="coords__x">x:</label>
+                        <input type="text" id="coords__x">
+                        <label for="coords__y">y:</label>
+                        <input type="text" id="coords__y">
+                    </div>
+
+                    <div class="get__time">
+                        <select class="amount_of_time">
                             <option value="INFINITE">Never</option>
                             <option value="ONE_MINUTE">1 Minute</option>
                             <option value="TEN_MINUTES">10 Minutes</option>
@@ -48,12 +55,55 @@
                             <option value="SIX_MONTH">6 Month</option>
                         </select>
                     </div>
-
-                    <div class="button">
-                        <input type="submit" value="Submit">
+                    <div class="form_button">
+                        <button onclick="extractData('drop-down')"></button>
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="popup-create-bg">
+    <div class="popup-create">
+        <img class="close-popup" th:src="@{static/images/close-icon.png}" height="25px" width="25px" alt="">
+        <div class="popup__content">
+            <h2 class="heading">New bin</h2>
+            <form id="pop-up">
+                <label for="popup__title"></label>
+                <input type="text" class="title" id="popup__title">
+                <label for="popup__message"></label>
+                <textarea class="message" id="popup__message" rows="15"></textarea>
+                <div class="get__time">
+                    <select class="amount_of_time">
+                        <option value="INFINITE">Never</option>
+                        <option value="ONE_MINUTE">1 Minute</option>
+                        <option value="TEN_MINUTES">10 Minutes</option>
+                        <option value="ONE_HOUR">1 Hour</option>
+                        <option value="ONE_DAY">1 Day</option>
+                        <option value="ONE_WEEK">1 Week</option>
+                        <option value="ONE_MONTH">1 Month</option>
+                        <option value="SIX_MONTH">6 Month</option>
+                    </select>
+                </div>
+                <div class="form_button">
+                    <button onclick="extractData('pop-up')" class="accordion-button"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="popup-show-bg">
+    <div class="popup-show">
+        <img class="close-popup" th:src="@{static/images/close-icon.png}" height="25px" width="25px" alt="">
+        <div class="popup__content">
+            <h2 class="show__title">Title</h2>
+            <div class="show__info">
+                <p class="show__options">x:1 y:1 amountOfTime</p>
+                <p class="show__id">id</p>
+            </div>
+            <p class="show__message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic molestias quia vitae. Aspernatur at autem dolorem itaque laudantium, libero numquam pariatur porro quia quos! A alias delectus perferendis perspiciatis possimus?</p>
         </div>
     </div>
 </div>
@@ -63,7 +113,11 @@
 <script th:src="@{/static/js/lib/jquery.min.js}"></script>
 <script th:src="@{/static/js/lib/sockjs.min.js}"></script>
 <script th:src="@{/static/js/lib/stomp.min.js}"></script>
+<script th:src="@{/static/js/canvas.js}"></script>
 <script th:src="@{/static/js/ws.js}"></script>
+<script th:inline="javascript">
+    let bins = [[${bins}]];
+</script>
 <script th:src="@{/static/js/index.js}"></script>
 </body>
 </html>

@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class BinDAO {
     private final JdbcTemplate jdbcTemplate;
@@ -16,7 +18,8 @@ public class BinDAO {
     }
 
     public void create(Bin bin) {
-        jdbcTemplate.update("INSERT INTO bin(id, title, text) VALUES(?, ?, ?)", bin.getId(), bin.getTitle(), bin.getText());
+        jdbcTemplate.update("INSERT INTO bin(id, title, message, x, y) VALUES(?, ?, ?, ?, ?)", bin.getId(),
+                bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY());
     }
 
     public Bin read(String id) {
@@ -24,8 +27,13 @@ public class BinDAO {
                 new BeanPropertyRowMapper<>(Bin.class), id).stream().findAny().orElse(null);
     }
 
+    public List<Bin> readAll() {
+        return jdbcTemplate.query("SELECT * FROM bin", new BeanPropertyRowMapper<>(Bin.class));
+    }
+
     public void update(Bin bin) {
-        jdbcTemplate.update("UPDATE bin SET title=?, text=? WHERE id=?", bin.getTitle(), bin.getText(), bin.getId());
+        jdbcTemplate.update("UPDATE bin SET title=?, message=?, x=?, y=? WHERE id=?", bin.getTitle(),
+                bin.getMessage(), bin.getX(), bin.getY(), bin.getId());
     }
 
     public void delete(String id) {

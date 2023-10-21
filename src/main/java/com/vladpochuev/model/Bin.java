@@ -10,5 +10,9 @@ import lombok.*;
 public class Bin {
     private String id;
     private String title;
-    private String text;
+    private String message;
+    private String amountOfTime;
+    private int x;
+    private int y;
 }
+

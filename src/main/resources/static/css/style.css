@@ -6,7 +6,7 @@ body {
     margin: 0;
 }
 
-.coords {
+.current-coords {
     position: absolute;
     z-index: 100;
     text-align: center;
@@ -68,7 +68,7 @@ body {
 }
 
 #new-bin-label #img {
-    background: url("../images/plus_icon.png") no-repeat center;
+    background: url("../images/plus-icon.png") no-repeat center;
     height: 100%;
     width: 100%;
 }
@@ -117,24 +117,34 @@ input:checked ~ #new-bin-menu {
     text-align: center;
 }
 
-#create__title_input, #get__input {
+.title {
     width: 100%;
     margin: 10px 0 0 0;
 }
 
-#create__textarea {
+.message {
     resize: none;
     width: 100%;
     margin-top: 10px;
 }
 
-.button {
+.coords {
+    display: flex;
+    justify-content: center;
+}
+
+.coords input {
+    margin: 0 10px;
+    width: 30px;
+}
+
+.form_button {
     display: flex;
     justify-content: center;
     margin-top: 10px;
 }
 
-.get__option {
+.get__time {
     display: flex;
     justify-content: center;
     margin-top: 10px;
@@ -145,6 +155,50 @@ input:checked ~ #new-bin-menu {
     flex: 0.7;
 }
 
-#create__textarea {
-    height: 100px;
+.popup-create-bg, .popup-show-bg {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, .8);
+}
+
+.popup-create, .popup-show {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    background-color: white;
+    height: 450px;
+    transform: translate(-50%, -50%);
+    border: 20px solid #ffba00;
+    border-radius: 30px;
+}
+
+.close-popup {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    cursor: pointer;
+}
+
+.popup__content {
+    padding: 0 20px;
+}
+
+.no-scroll {
+    overflow-y: hidden;
+}
+
+
+.show__info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.show__message {
+    margin-top: 20px;
+    font-size: 18px;
 }
