@@ -130,7 +130,15 @@ input:checked ~ #new-bin-menu {
 
 .coords {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+}
+
+.coords__input {
+    display: flex;
+    align-items: center;
+    flex-grow: 0;
 }
 
 .coords input {

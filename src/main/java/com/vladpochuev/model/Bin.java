@@ -7,12 +7,12 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Bin {
+public class Bin implements Placeable {
     private String id;
     private String title;
     private String message;
     private String amountOfTime;
-    private int x;
-    private int y;
+    private Integer x;
+    private Integer y;
 }
 

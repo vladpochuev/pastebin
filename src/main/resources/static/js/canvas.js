@@ -24,7 +24,7 @@ const setPanEvents = (canvas) => {
         const coords = document.querySelector(".current-coords")
         coords.textContent = `(${point.x};${point.y})`
 
-        if(mousePressed && e.button === 1 && onField(e)) {
+        if(mousePressed && e.button === 1) {
             canvas.setCursor('grab')
             let delta = new fabric.Point(e.e.movementX, e.e.movementY);
             /*minimap.requestRenderAll();
@@ -34,7 +34,7 @@ const setPanEvents = (canvas) => {
     })
 
     canvas.on('mouse:down', e => {
-        if(e.button === 1 && onField(e)) {
+        if(e.button === 1) {
             mousePressed = true;
             canvas.setCursor('grab')
         } else if(e.button === 3 && e.target == null) {
@@ -86,14 +86,6 @@ const getExactPoint = (e) => {
     return new fabric.Point(x,y)
 }
 
-const onField = (e) => {
-    const point = getExactPoint(e)
-    return point.x > -993
-        && point.x < 993
-        && point.y > -993
-        && point.y < 993
-}
-
 const createObject = (id, title, x, y) => {
     const rect = new fabric.Rect({
         width: clusterSizeX,
@@ -135,11 +127,11 @@ const createObject = (id, title, x, y) => {
 
 const createGrid = (x, y) => {
     const properties = {stroke: '#c5897c', evented: false, lockMovementX: true, lockMovementY: true}
-    for (let i = -1000; i <= 1000; i++) {
-        canvas.add(new fabric.Line([i * x, 1000 * y, i * x, 1000 * -y], properties))
+    for (let i = -100; i <= 101; i++) {
+        canvas.add(new fabric.Line([i * x, 101 * y, i * x, 100 * -y], properties))
     }
-    for (let i = -1000; i <= 1000; i++) {
-        canvas.add(new fabric.Line([1000 * x, i * y, 1000 * -x, i * y], properties))
+    for (let i = -100; i <= 101; i++) {
+        canvas.add(new fabric.Line([101 * x, i * y, 100 * -x, i * y], properties))
     }
 }
 

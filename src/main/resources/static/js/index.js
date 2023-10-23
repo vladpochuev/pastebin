@@ -5,7 +5,7 @@ const extractData = (form) => {
     let message = $(form + " .message").val()
     let amountOfTime = $(form + " .amount_of_time").val()
     let x, y
-    if(form === '#drop-down') {
+    if(form === '#drop-down' && $('#coords__input:checked').val() === 'on') {
         x = $("#coords__x").val()
         y = $("#coords__y").val()
     } else if(form === '#pop-up') {
@@ -103,3 +103,15 @@ const showBin = (data) => {
 
     openPopup('popup-show-bg')
 }
+
+$('#coords__input, #coords__auto').change(() => {
+    let x = $('#coords__x')
+    let y = $('#coords__y')
+    if($('.coords input[type=radio]:checked').attr('id') === 'coords__auto') {
+        x.prop('disabled', true)
+        y.prop('disabled', true)
+    } else {
+        x.prop('disabled', false)
+        y.prop('disabled', false)
+    }
+})

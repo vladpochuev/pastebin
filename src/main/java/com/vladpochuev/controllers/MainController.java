@@ -6,6 +6,8 @@ import com.vladpochuev.dao.BinDAO;
 import com.vladpochuev.model.Bin;
 import com.vladpochuev.model.BinMessage;
 import com.vladpochuev.model.BinNotification;
+import com.vladpochuev.model.Point;
+import com.vladpochuev.service.BFS;
 import com.vladpochuev.service.HashGenerator;
 import com.vladpochuev.service.LinkHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +46,19 @@ public class MainController {
 
     @GetMapping("/bin")
     public ResponseEntity<BinMessage> getBin(@RequestParam("id") String id) {
-        Bin bin = binDAO.read(id);
+        Bin bin = binDAO.readById(id);
         return new ResponseEntity<>(new BinMessage(bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY()), HttpStatus.OK);
     }
 
     @MessageMapping("/newBin")
     @SendTo("/topic/binNotifications")
     public BinNotification sendBinWS(Bin bin) {
+        if(bin.getX() == null && bin.getY() == null) {
+            BFS<Bin> bfs = new BFS<>(binDAO, 100, 100);
+            Point coords = bfs.findNearest();
+            bin.setX(coords.getX());
+            bin.setY(coords.getY());
+        }
         HashGenerator hashGenerator = new HashGenerator(bin.getTitle(), bin.getMessage());
         bin.setId(hashGenerator.getHash("SHA-1", 10));
         binDAO.create(bin);

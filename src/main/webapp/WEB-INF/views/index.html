@@ -37,10 +37,21 @@
                     </div>
 
                     <div class="coords">
-                        <label for="coords__x">x:</label>
-                        <input type="text" id="coords__x">
-                        <label for="coords__y">y:</label>
-                        <input type="text" id="coords__y">
+                        <div class="coords__input">
+                            <div class="coords__radio">
+                                <input checked type="radio" name="coords__radio" id="coords__input">
+                                <label for="coords__x">x:</label>
+                                <input type="text" id="coords__x">
+                                <label for="coords__y">y:</label>
+                                <input type="text" id="coords__y">
+                            </div>
+                        </div>
+                        <div class="coords__radio">
+                            <label>
+                                <input type="radio" name="coords__radio" id="coords__auto">
+                            </label>
+                            nearest to center
+                        </div>
                     </div>
 
                     <div class="get__time">
