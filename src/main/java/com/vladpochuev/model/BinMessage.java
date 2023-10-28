@@ -13,4 +13,8 @@ public class BinMessage {
     private String message;
     private int x;
     private int y;
+
+    public static BinMessage getFromBin(Bin bin) {
+        return new BinMessage(bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY());
+    }
 }

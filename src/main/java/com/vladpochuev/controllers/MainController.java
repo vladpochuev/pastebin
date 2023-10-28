@@ -23,15 +23,21 @@ import java.util.Base64;
 import java.util.List;
 
 @Controller
+@RequestMapping("/map")
 public class MainController {
     private final BinDAO binDAO;
+
     @Autowired
     public MainController(BinDAO binDAO) {
         this.binDAO = binDAO;
     }
 
-    @GetMapping()
-    public String getMenu(Model model) {
+    @GetMapping("")
+    public String getMenu(Model model, @RequestParam(value = "id", required = false) String id) {
+        Bin selectedBin = binDAO.readById(id);
+        if(selectedBin != null) {
+            model.addAttribute("urlBin", BinMessage.getFromBin(selectedBin));
+        }
         try {
             List<Bin> bins = binDAO.readAll();
             ObjectMapper mapper = new ObjectMapper();
@@ -47,19 +53,21 @@ public class MainController {
     @GetMapping("/bin")
     public ResponseEntity<BinMessage> getBin(@RequestParam("id") String id) {
         Bin bin = binDAO.readById(id);
-        return new ResponseEntity<>(new BinMessage(bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY()), HttpStatus.OK);
+        BinMessage message = BinMessage.getFromBin(bin);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @MessageMapping("/newBin")
     @SendTo("/topic/binNotifications")
     public BinNotification sendBinWS(Bin bin) {
-        if(bin.getX() == null && bin.getY() == null) {
+        if (bin.getX() == null && bin.getY() == null) {
             BFS<Bin> bfs = new BFS<>(binDAO, 100, 100);
             Point coords = bfs.findNearest();
             bin.setX(coords.getX());
             bin.setY(coords.getY());
         }
-        HashGenerator hashGenerator = new HashGenerator(bin.getTitle(), bin.getMessage());
+        HashGenerator hashGenerator = new HashGenerator(bin.getTitle(),
+                bin.getX(), bin.getY(), System.nanoTime(), Math.floor(Math.random() * 1024));
         bin.setId(hashGenerator.getHash("SHA-1", 10));
         binDAO.create(bin);
         LinkHandler handler = new LinkHandler(bin.getId(), bin.getAmountOfTime(), binDAO);

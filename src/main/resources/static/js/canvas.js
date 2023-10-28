@@ -15,7 +15,7 @@ const initCanvas = () => {
     canvas.renderAll()
     setPanEvents(canvas)
     createGrid(clusterSizeX, clusterSizeY)
-    canvas.relativePan(new fabric.Point(clusterSizeX * 3, clusterSizeY))
+    shiftCanvas(clusterSizeX * 3, clusterSizeY)
 }
 
 const setPanEvents = (canvas) => {
@@ -26,16 +26,13 @@ const setPanEvents = (canvas) => {
 
         if(mousePressed && e.button === 1) {
             canvas.setCursor('grab')
-            let delta = new fabric.Point(e.e.movementX, e.e.movementY);
-            /*minimap.requestRenderAll();
-            updateMiniMapVP();*/
-            canvas.relativePan(delta)
+            shiftCanvas(e.e.movementX, e.e.movementY)
         }
     })
 
     canvas.on('mouse:down', e => {
         if(e.button === 1) {
-            mousePressed = true;
+            mousePressed = true
             canvas.setCursor('grab')
         } else if(e.button === 3 && e.target == null) {
             let point = getExactPoint(e)
@@ -47,33 +44,32 @@ const setPanEvents = (canvas) => {
 
     canvas.on('mouse:up', e => {
         if(e.button === 1) {
-            mousePressed = false;
+            mousePressed = false
             canvas.setCursor('default')
         }
     })
 
     canvas.on('mouse:wheel', opt => {
-        let delta = opt.e.deltaY;
+        let delta = opt.e.deltaY
         zoom(delta, opt.e.offsetX, opt.e.offsetY)
-        opt.e.preventDefault();
-        opt.e.stopPropagation();
-    });
+        opt.e.preventDefault()
+        opt.e.stopPropagation()
+    })
 }
 
 const zoom = (delta, offsetX, offsetY) => {
-    let zoom = canvas.getZoom();
-    zoom *= 0.999 ** delta;
+    let zoom = canvas.getZoom()
+    zoom *= 0.999 ** delta
 
-    if (zoom > 3) zoom = 3;
-    if (zoom < 0.05) zoom = 0.05;
-    /*updateMiniMapVP()*/
+    if (zoom > 3) zoom = 3
+    if (zoom < 0.05) zoom = 0.05
     const zoomLevel = document.querySelector('#zoom-level')
     zoomLevel.textContent = Math.ceil(zoom * 100) + "%"
-    canvas.zoomToPoint({ x: offsetX, y: offsetY }, zoom);
+    canvas.zoomToPoint({ x: offsetX, y: offsetY }, zoom)
 }
 
 const getPointer = (e) => {
-    let touch = e.e.touches ? e.e.touches[0] : e.e;
+    let touch = e.e.touches ? e.e.touches[0] : e.e
     const x = canvas.getPointer(touch).x
     const y = canvas.getPointer(touch).y
     return new fabric.Point(x, y)
@@ -109,7 +105,7 @@ const createObject = (id, title, x, y) => {
         name: id,
         lockMovementY: true})
 
-    group.on('mousemove', e => {
+    group.on('mousemove', () => {
         if(!mousePressed) {
             canvas.setCursor('default')
         }
@@ -122,7 +118,6 @@ const createObject = (id, title, x, y) => {
     })
 
     canvas.add(group)
-    /*updateMiniMap()*/
 }
 
 const createGrid = (x, y) => {
@@ -135,75 +130,6 @@ const createGrid = (x, y) => {
     }
 }
 
-/*
-
-function createCanvasEl() {
-    let designSize = { width: 800, height: 600};
-    let originalVPT = canvas.viewportTransform;
-    // zoom to fit the canvas in the display canvas
-    let designRatio = fabric.util.findScaleToFit(designSize, canvas);
-    // zoom to fit the display the canvas in the minimap.
-    let minimapRatio = fabric.util.findScaleToFit(canvas, minimap);
-
-    let scaling = minimap.getRetinaScaling();
-
-    let finalWidth =  designSize.width * designRatio;
-    let finalHeight =  designSize.height * designRatio;
-
-    canvas.viewportTransform = [
-        designRatio, 0, 0, designRatio,
-        (canvas.getWidth() - finalWidth) / 2,
-        (canvas.getHeight() - finalHeight) / 2
-    ];
-    let canvasViewPort = canvas.toCanvasElement(minimapRatio * scaling);
-    canvas.viewportTransform = originalVPT;
-    return canvasViewPort;
+const shiftCanvas = (x, y) => {
+    canvas.relativePan(new fabric.Point(x, y))
 }
-
-const updateMiniMap = () => {
-    minimap.backgroundImage._element = createCanvasEl();
-    minimap.requestRenderAll();
-};
-
-const updateMiniMapVP = () => {
-    let designSize = { width: 800, height: 600 };
-    let rect = minimap.getObjects()[0];
-    let designRatio = fabric.util.findScaleToFit(designSize, canvas);
-    let totalRatio = fabric.util.findScaleToFit(designSize, minimap);
-    let finalRatio = designRatio / canvas.getZoom();
-    rect.scaleX = finalRatio;
-    rect.scaleY = finalRatio;
-    rect.top = minimap.backgroundImage.top - canvas.viewportTransform[5] * totalRatio / canvas.getZoom();
-    rect.left = minimap.backgroundImage.left - canvas.viewportTransform[4] * totalRatio / canvas.getZoom();
-    minimap.requestRenderAll();
-}
-
-
-const initMinimap = () => {
-    let canvasViewPort = createCanvasEl()
-    let backgroundImage = new fabric.Image(canvasViewPort)
-    backgroundImage.scaleX = 1 / canvas.getRetinaScaling()
-    backgroundImage.scaleY = 1 / canvas.getRetinaScaling()
-    minimap.centerObject(backgroundImage)
-    minimap.backgroundColor = 'white';
-    minimap.backgroundImage = backgroundImage;
-    minimap.requestRenderAll();
-    let minimapView = new fabric.Rect({
-        top: backgroundImage.top,
-        left: backgroundImage.left,
-        width: backgroundImage.width / canvas.getRetinaScaling(),
-        height: backgroundImage.height / canvas.getRetinaScaling(),
-        fill: 'rgba(0, 0, 255, 0.3)',
-        cornerSize: 6,
-        transparentCorners: false,
-        cornerColor: 'blue',
-        strokeWidth: 0,
-    });
-    minimapView.controls = {
-        br: fabric.Object.prototype.controls.br,
-    };
-    minimap.add(minimapView);
-};
-
-initMinimap()
-updateMiniMapVP()*/

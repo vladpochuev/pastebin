@@ -5,10 +5,10 @@ const extractData = (form) => {
     let message = $(form + " .message").val()
     let amountOfTime = $(form + " .amount_of_time").val()
     let x, y
-    if(form === '#drop-down' && $('#coords__input:checked').val() === 'on') {
+    if (form === '#drop-down' && $('#coords__input:checked').val() === 'on') {
         x = $("#coords__x").val()
         y = $("#coords__y").val()
-    } else if(form === '#pop-up') {
+    } else if (form === '#pop-up') {
         x = window.lastClickX
         y = window.lastClickY
     }
@@ -17,7 +17,8 @@ const extractData = (form) => {
         title: title,
         message: message,
         amountOfTime: amountOfTime,
-        x: x, y: y}
+        x: x, y: y
+    }
 
     ws.sendMessage(bin)
     closePopup()
@@ -25,30 +26,30 @@ const extractData = (form) => {
 
 const setFormEvents = () => {
     $("form").on('submit', function (e) {
-        e.preventDefault();
-    });
+        e.preventDefault()
+    })
 }
 
 const decodeBins = () => {
     let byteChars = atob(bins)
-    let byteArray = new Uint8Array(byteChars.length);
+    let byteArray = new Uint8Array(byteChars.length)
     for (let i = 0; i < byteChars.length; i++) {
-        byteArray[i] = byteChars.charCodeAt(i);
+        byteArray[i] = byteChars.charCodeAt(i)
     }
-    return new TextDecoder().decode(byteArray);
+    return new TextDecoder().decode(byteArray)
 }
 
 const createBinsFromJSON = (json) => {
-    let jsonObject = JSON.parse(json);
+    let jsonObject = JSON.parse(json)
     jsonObject.forEach(a => createObject(a.id, a.title, a.x, a.y))
 }
 
-let mousePressed = false;
+let mousePressed = false
 let clusterSizeX = Math.floor(window.innerWidth / 7)
 let clusterSizeY = Math.floor(window.innerWidth / 7)
 let ws = new WS()
 
-const canvas = createCanvas('canvas');
+const canvas = createCanvas('canvas')
 /*const minimap = new fabric.Canvas('minimap', {containerClass: 'minimap', selection: false})*/
 initCanvas()
 setFormEvents()
@@ -65,13 +66,13 @@ $('.close-popup').click(() => {
 })
 
 $('.popup-create-bg').click(e => {
-    if(e.target.className === 'popup-create-bg' && confirm('Are you sure?')) {
+    if (e.target.className === 'popup-create-bg' && confirm('Are you sure?')) {
         closePopup()
     }
 })
 
 $('.popup-show-bg').click(e => {
-    if(e.target.className === 'popup-create-bg') {
+    if (e.target.className === 'popup-create-bg') {
         closePopup()
     }
 })
@@ -85,14 +86,14 @@ const closePopup = () => {
 
 const getAndShowBin = (id) => {
     $.ajax({
-        url: '/bin',
+        url: '/map/bin',
         method: 'get',
         dataType: 'json',
         data: {id: id},
         success: function (data) {
             showBin(data)
         }
-    });
+    })
 }
 
 const showBin = (data) => {
@@ -107,7 +108,7 @@ const showBin = (data) => {
 $('#coords__input, #coords__auto').change(() => {
     let x = $('#coords__x')
     let y = $('#coords__y')
-    if($('.coords input[type=radio]:checked').attr('id') === 'coords__auto') {
+    if ($('.coords input[type=radio]:checked').attr('id') === 'coords__auto') {
         x.prop('disabled', true)
         y.prop('disabled', true)
     } else {
@@ -115,3 +116,8 @@ $('#coords__input, #coords__auto').change(() => {
         y.prop('disabled', false)
     }
 })
+
+if (urlBin) {
+    shiftCanvas(-urlBin.x * clusterSizeX, -urlBin.y * clusterSizeY)
+    showBin(urlBin)
+}

@@ -7,7 +7,7 @@ class WS {
         const self = this
         self.stompClient = Stomp.over(socket)
         self.stompClient.connect({}, function (frame) {
-            self.connected = true;
+            self.connected = true
             console.log('Connected: ' + frame)
             self.stompClient.subscribe('/topic/binNotifications', function (greeting) {
                 self.getMessage(JSON.parse(greeting.body))

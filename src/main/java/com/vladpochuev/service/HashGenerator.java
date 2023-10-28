@@ -6,10 +6,10 @@ import java.security.NoSuchAlgorithmException;
 public class HashGenerator {
     private String text;
 
-    public HashGenerator(String... values) {
+    public HashGenerator(Object... values) {
         StringBuilder builder = new StringBuilder();
-        for (String value : values) {
-            builder.append(value);
+        for (Object value : values) {
+            builder.append(value.toString());
         }
         text = builder.toString();
     }
