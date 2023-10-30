@@ -3,25 +3,27 @@ package com.vladpochuev.service;
 import com.vladpochuev.dao.DAO;
 import com.vladpochuev.model.Placeable;
 import com.vladpochuev.model.Point;
-import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 
-@RequiredArgsConstructor
 public class BFS<Obj extends Placeable> {
     private final HashSet<Point> searched = new HashSet<>();
-    private static volatile boolean[][] field;
+    private boolean[][] field;
     private final Deque<Point> deque = new ArrayDeque<>();
     private final DAO<Obj> dao;
 
     private final int amountOfCellsX;
     private final int amountOfCellsY;
 
-    public Point findNearest() {
+    public BFS(DAO<Obj> dao, int amountOfCellsX, int amountOfCellsY) {
+        this.dao = dao;
+        this.amountOfCellsX = amountOfCellsX;
+        this.amountOfCellsY = amountOfCellsY;
         fillField();
+    }
 
+    public Point findNearest() {
         Point curPoint = new Point(0, 0);
-        searched.add(curPoint);
 
         while (field[curPoint.getX() + amountOfCellsX][curPoint.getY() + amountOfCellsY]) {
             addNearbyPoints(curPoint);

@@ -210,3 +210,21 @@ input:checked ~ #new-bin-menu {
     margin-top: 20px;
     font-size: 18px;
 }
+
+.toast__new-bin {
+    display: flex;
+    justify-content: space-between;
+}
+
+.toast-close-button {
+    width: 20px;
+    height: 20px;
+}
+
+.toast__link img:nth-of-type(1) {
+    position: absolute;
+}
+
+.toast__link:hover img:nth-of-type(1) {
+    display: none;
+}

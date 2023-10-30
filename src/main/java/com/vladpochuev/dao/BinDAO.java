@@ -3,6 +3,7 @@ package com.vladpochuev.dao;
 import com.vladpochuev.model.Bin;
 import com.vladpochuev.model.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -17,11 +18,21 @@ public class BinDAO implements DAO<Bin> {
     public BinDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     @Override
-    public void create(Bin bin) {
-        jdbcTemplate.update("INSERT INTO bin(id, title, message, x, y) VALUES(?, ?, ?, ?, ?)", bin.getId(),
+    public void create(Bin bin) throws DuplicateKeyException {
+        jdbcTemplate.update("BEGIN;" +
+                        "LOCK TABLE bin IN EXCLUSIVE MODE;" +
+                        "INSERT INTO bin(id, title, message, x, y) VALUES(?, ?, ?, ?, ?);" +
+                        "COMMIT", bin.getId(),
                 bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY());
     }
+
+    @Override
+    public List<Bin> readAll() {
+        return jdbcTemplate.query("SELECT * FROM bin", new BeanPropertyRowMapper<>(Bin.class));
+    }
+
     @Override
     public Bin readById(String id) {
         return jdbcTemplate.query("SELECT * FROM bin WHERE id=?",
@@ -31,12 +42,8 @@ public class BinDAO implements DAO<Bin> {
     @Override
     public Bin readByCoords(Point point) {
         return jdbcTemplate.query("SELECT * FROM bin WHERE x=? AND y=?",
-                new BeanPropertyRowMapper<>(Bin.class), point.getX(), point.getY()).stream().findAny().orElse(null);
-    }
-
-    @Override
-    public List<Bin> readAll() {
-        return jdbcTemplate.query("SELECT * FROM bin", new BeanPropertyRowMapper<>(Bin.class));
+                        new BeanPropertyRowMapper<>(Bin.class), point.getX(), point.getY())
+                .stream().findAny().orElse(null);
     }
 
     @Override

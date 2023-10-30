@@ -1,4 +1,5 @@
 const extractData = (form) => {
+    console.log('clicked')
     form = '#' + form
 
     let title = $(form + " .title").val()
@@ -91,7 +92,11 @@ const getAndShowBin = (id) => {
         dataType: 'json',
         data: {id: id},
         success: function (data) {
-            showBin(data)
+            if (data.code === 0) {
+                showBin(data)
+            } else if (data.code === 1) {
+                toastr.error("Error while getting the bin")
+            }
         }
     })
 }
@@ -117,7 +122,43 @@ $('#coords__input, #coords__auto').change(() => {
     }
 })
 
-if (urlBin) {
-    shiftCanvas(-urlBin.x * clusterSizeX, -urlBin.y * clusterSizeY)
-    showBin(urlBin)
+if (urlBin !== null) {
+    if (urlBin.code === 0) {
+        shiftCanvas(-urlBin.x * clusterSizeX, -urlBin.y * clusterSizeY)
+        showBin(urlBin)
+    } else if (urlBin.code === 1) {
+        toastr.error("Bin was not found")
+    }
+}
+
+toastr.options = {
+    'closeButton': true,
+    'debug': false,
+    'newestOnTop': true,
+    'progressBar': true,
+    'positionClass': 'toast-bottom-left',
+    'preventDuplicates': false,
+    'onclick': null,
+    'showDuration': 300,
+    'hideDuration': 1000,
+    'timeOut': 5000,
+    'extendedTimeOut': 10000,
+    'showEasing': 'swing',
+    'hideEasing': 'linear',
+    'showMethod': 'fadeIn',
+    'hideMethod': 'fadeOut',
+    'tapToDismiss': false
+}
+
+const copyUrl = (id) => {
+    const sysInput = document.createElement('input')
+    let url = new URL(location.href)
+    url.searchParams.set('id', id)
+    sysInput.setAttribute('value', url.toString())
+    document.body.appendChild(sysInput)
+    sysInput.select()
+    document.execCommand('copy')
+    document.body.removeChild(sysInput)
+
+    toastr.success("Copied to clipboard")
 }
