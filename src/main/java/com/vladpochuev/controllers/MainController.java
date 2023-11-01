@@ -72,7 +72,7 @@ public class MainController {
 
     @MessageMapping("/newBin")
     @SendTo("/topic/binNotifications")
-    public BinNotification sendBinWS(Bin bin) {
+    public BinNotification newBinWS(Bin bin) {
         HashGenerator hashGenerator = new HashGenerator(bin.getTitle(), System.nanoTime(), Math.floor(Math.random() * 1024));
         bin.setId(hashGenerator.getHash("SHA-1", 10));
 

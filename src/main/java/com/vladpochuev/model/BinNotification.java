@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 public class BinNotification {
     private String id;
     private String title;
-    private int x;
-    private int y;
+    private Integer x;
+    private Integer y;
     private int code;
 
     public static BinNotification getFromBin(Bin bin, StatusCode statusCode) {

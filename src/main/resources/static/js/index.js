@@ -1,6 +1,9 @@
+
 const extractData = (form) => {
-    console.log('clicked')
     form = '#' + form
+    if(!validateForm(form)) {
+        return
+    }
 
     let title = $(form + " .title").val()
     let message = $(form + " .message").val()
@@ -25,10 +28,62 @@ const extractData = (form) => {
     closePopup()
 }
 
+const validateForm = (form) => {
+    let errorCounter = 0
+    let formReq = $(form + ' .__req')
+
+    for (let i = 0; i < formReq.length; i++) {
+        const input = formReq[i];
+        formRemoveError(input)
+
+        if(input.value.length === 0) {
+            formAddError(input)
+            errorCounter++
+        }
+
+        input.classList.forEach(a => {
+            if(a.includes('__max-length') && !isLengthValid(input)) {
+                formAddError(input)
+                errorCounter++
+            }
+        })
+
+        input.classList.forEach(a => {
+            if(a.includes('__max-value') && !isValueValid(input)) {
+                formAddError(input)
+                errorCounter++
+            }
+        })
+    }
+
+    return errorCounter === 0
+}
+
+const formAddError = (input) => {
+    input.classList.add('__error')
+}
+
+const formRemoveError = (input) => {
+    input.classList.remove('__error')
+}
+
 const setFormEvents = () => {
     $("form").on('submit', function (e) {
         e.preventDefault()
     })
+}
+
+const isLengthValid = input => {
+    let el = input.getAttribute('class').split(' ').filter(e => e.startsWith('__max-length')).toString()
+    return (input.value.length <= parseInt(el.match(/\d+$/).toString()));
+}
+
+const isValueValid = (input) => {
+    let minVal = parseInt(input.getAttribute('class').split(' ')
+        .filter(e => e.startsWith('__min-value')).toString().match(/[\d-]+$/).toString())
+    let maxVal = parseInt(input.getAttribute('class').split(' ')
+        .filter(e => e.startsWith('__max-value')).toString().match(/[\d-]+$/).toString())
+    return minVal <= input.value && input.value <= maxVal
 }
 
 const decodeBins = () => {
@@ -116,9 +171,15 @@ $('#coords__input, #coords__auto').change(() => {
     if ($('.coords input[type=radio]:checked').attr('id') === 'coords__auto') {
         x.prop('disabled', true)
         y.prop('disabled', true)
+        x.removeClass("__req")
+        y.removeClass("__req")
+        x.removeClass("__error")
+        y.removeClass("__error")
     } else {
         x.prop('disabled', false)
         y.prop('disabled', false)
+        x.addClass("__req")
+        y.addClass("__req")
     }
 })
 

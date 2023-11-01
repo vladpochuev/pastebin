@@ -21,8 +21,8 @@ class WS {
 
     getMessage(message) {
         if(message.code === 0) {
-            const linkIconUrl = document.querySelector("[data-link-icon-url]").getAttribute("data-link-icon-url")
-            const linkIconActiveUrl = document.querySelector("[data-link-icon-active-url]").getAttribute("data-link-icon-active-url")
+            const linkIconUrl = $("[data-link-icon-url]").attr("data-link-icon-url")
+            const linkIconActiveUrl = $("[data-link-icon-active-url]").attr("data-link-icon-active-url")
 
             createObject(message.id, message.title, message.x, message.y)
             toastr.success(`<div class="toast__new-bin"><span>Bin was successfully created</span> <span class="toast__link">
