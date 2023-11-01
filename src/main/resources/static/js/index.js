@@ -24,66 +24,8 @@ const extractData = (form) => {
         x: x, y: y
     }
 
-    ws.sendMessage(bin)
+    ws.createBin(bin)
     closePopup()
-}
-
-const validateForm = (form) => {
-    let errorCounter = 0
-    let formReq = $(form + ' .__req')
-
-    for (let i = 0; i < formReq.length; i++) {
-        const input = formReq[i];
-        formRemoveError(input)
-
-        if(input.value.length === 0) {
-            formAddError(input)
-            errorCounter++
-        }
-
-        input.classList.forEach(a => {
-            if(a.includes('__max-length') && !isLengthValid(input)) {
-                formAddError(input)
-                errorCounter++
-            }
-        })
-
-        input.classList.forEach(a => {
-            if(a.includes('__max-value') && !isValueValid(input)) {
-                formAddError(input)
-                errorCounter++
-            }
-        })
-    }
-
-    return errorCounter === 0
-}
-
-const formAddError = (input) => {
-    input.classList.add('__error')
-}
-
-const formRemoveError = (input) => {
-    input.classList.remove('__error')
-}
-
-const setFormEvents = () => {
-    $("form").on('submit', function (e) {
-        e.preventDefault()
-    })
-}
-
-const isLengthValid = input => {
-    let el = input.getAttribute('class').split(' ').filter(e => e.startsWith('__max-length')).toString()
-    return (input.value.length <= parseInt(el.match(/\d+$/).toString()));
-}
-
-const isValueValid = (input) => {
-    let minVal = parseInt(input.getAttribute('class').split(' ')
-        .filter(e => e.startsWith('__min-value')).toString().match(/[\d-]+$/).toString())
-    let maxVal = parseInt(input.getAttribute('class').split(' ')
-        .filter(e => e.startsWith('__max-value')).toString().match(/[\d-]+$/).toString())
-    return minVal <= input.value && input.value <= maxVal
 }
 
 const decodeBins = () => {
@@ -103,10 +45,12 @@ const createBinsFromJSON = (json) => {
 let mousePressed = false
 let clusterSizeX = Math.floor(window.innerWidth / 7)
 let clusterSizeY = Math.floor(window.innerWidth / 7)
+const amountOfCellsX = 100
+const amountOfCellsY = 100
+field = new Field(amountOfCellsX, amountOfCellsY)
 let ws = new WS()
 
 const canvas = createCanvas('canvas')
-/*const minimap = new fabric.Canvas('minimap', {containerClass: 'minimap', selection: false})*/
 initCanvas()
 setFormEvents()
 createBinsFromJSON(decodeBins())
@@ -132,6 +76,25 @@ $('.popup-show-bg').click(e => {
         closePopup()
     }
 })
+
+toastr.options = {
+    'closeButton': true,
+    'debug': false,
+    'newestOnTop': true,
+    'progressBar': true,
+    'positionClass': 'toast-bottom-left',
+    'preventDuplicates': false,
+    'onclick': null,
+    'showDuration': 300,
+    'hideDuration': 1000,
+    'timeOut': 5000,
+    'extendedTimeOut': 10000,
+    'showEasing': 'swing',
+    'hideEasing': 'linear',
+    'showMethod': 'fadeIn',
+    'hideMethod': 'fadeOut',
+    'tapToDismiss': false
+}
 
 
 const closePopup = () => {
@@ -192,26 +155,8 @@ if (urlBin !== null) {
     }
 }
 
-toastr.options = {
-    'closeButton': true,
-    'debug': false,
-    'newestOnTop': true,
-    'progressBar': true,
-    'positionClass': 'toast-bottom-left',
-    'preventDuplicates': false,
-    'onclick': null,
-    'showDuration': 300,
-    'hideDuration': 1000,
-    'timeOut': 5000,
-    'extendedTimeOut': 10000,
-    'showEasing': 'swing',
-    'hideEasing': 'linear',
-    'showMethod': 'fadeIn',
-    'hideMethod': 'fadeOut',
-    'tapToDismiss': false
-}
-
 const copyUrl = (id) => {
+    console.log('copyUrl')
     const sysInput = document.createElement('input')
     let url = new URL(location.href)
     url.searchParams.set('id', id)

@@ -117,16 +117,17 @@ const createObject = (id, title, x, y) => {
         }
     })
 
+    field.create(group, x, y)
     canvas.add(group)
 }
 
 const createGrid = (x, y) => {
     const properties = {stroke: '#c5897c', evented: false, lockMovementX: true, lockMovementY: true}
-    for (let i = -100; i <= 101; i++) {
-        canvas.add(new fabric.Line([i * x, 101 * y, i * x, 100 * -y], properties))
+    for (let i = -amountOfCellsX; i <= amountOfCellsX + 1; i++) {
+        canvas.add(new fabric.Line([i * x, (amountOfCellsY + 1) * y, i * x, amountOfCellsY * -y], properties))
     }
-    for (let i = -100; i <= 101; i++) {
-        canvas.add(new fabric.Line([101 * x, i * y, 100 * -x, i * y], properties))
+    for (let i = -amountOfCellsY; i <= amountOfCellsY + 1; i++) {
+        canvas.add(new fabric.Line([(amountOfCellsX + 1) * x, i * y, amountOfCellsX * -x, i * y], properties))
     }
 }
 

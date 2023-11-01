@@ -1,17 +1,22 @@
 package com.vladpochuev.service;
 
+import com.vladpochuev.controllers.MainController;
 import com.vladpochuev.dao.BinDAO;
-
+import com.vladpochuev.model.Bin;
+import com.vladpochuev.model.BinNotification;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 public class LinkHandler extends Thread {
-    private final String binId;
+    private final Bin bin;
     private final String amountOfTime;
     private final BinDAO binDAO;
+    private final SimpMessagingTemplate template;
 
-    public LinkHandler(String binId, String amountOfTime, BinDAO binDAO) {
-        this.binId = binId;
+    public LinkHandler(Bin bin, String amountOfTime, BinDAO binDAO, SimpMessagingTemplate template) {
+        this.bin = bin;
         this.binDAO = binDAO;
         this.amountOfTime = amountOfTime;
+        this.template = template;
     }
 
     @Override
@@ -19,10 +24,11 @@ public class LinkHandler extends Thread {
         try {
             Long amountOfTime = getAmountOfTime(this.amountOfTime);
             if(amountOfTime == null) return;
-            System.out.println("bin " + binId + " was added to queue for " + amountOfTime + " ms");
+            System.out.println("bin " + bin.getId() + " was added to queue for " + amountOfTime + " ms");
             Thread.sleep(amountOfTime);
-            binDAO.delete(binId);
-            System.out.println("bin " + binId + " was removed");
+            binDAO.delete(bin.getId());
+            template.convertAndSend("/topic/deletedBinNotifications", BinNotification.getFromBin(bin, StatusCode.OK));
+            System.out.println("bin " + bin.getId() + " was removed");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

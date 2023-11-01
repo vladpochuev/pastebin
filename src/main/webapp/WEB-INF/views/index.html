@@ -68,7 +68,7 @@
                         </select>
                     </div>
                     <div class="form_button">
-                        <button onclick="extractData('drop-down')"></button>
+                        <button onclick="extractData('drop-down')">Submit</button>
                     </div>
                 </form>
             </div>
@@ -99,7 +99,7 @@
                     </select>
                 </div>
                 <div class="form_button">
-                    <button onclick="extractData('pop-up')" class="accordion-button"></button>
+                    <button onclick="extractData('pop-up')" class="accordion-button">Submit</button>
                 </div>
             </form>
         </div>
@@ -112,13 +112,14 @@
         <div class="popup__content">
             <h2 class="show__title">Title</h2>
             <div class="show__info">
-                <p class="show__options">x:1 y:1 amountOfTime</p>
+                <p class="show__options">x:1 y:1</p>
                 <p class="show__id">id</p>
             </div>
             <p class="show__message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic molestias quia vitae.
                 Aspernatur at autem dolorem itaque laudantium, libero numquam pariatur porro quia quos! A alias delectus
                 perferendis perspiciatis possimus?</p>
         </div>
+        <button onclick="ws.deleteBin($('.show__id').text())">Delete</button>
     </div>
 </div>
 
@@ -131,11 +132,14 @@
 <script th:src="@{/static/js/lib/jquery.min.js}"></script>
 <script th:src="@{/static/js/lib/sockjs.min.js}"></script>
 <script th:src="@{/static/js/lib/stomp.min.js}"></script>
-<script th:src="@{/static/js/canvas.js}"></script>
 <script th:src="@{/static/js/lib/toastr.min.js}"></script>
+<script th:src="@{/static/js/canvas.js}"></script>
 <script th:src="@{/static/js/ws.js}"></script>
+<script th:src="@{/static/js/formValidator.js}"></script>
+<script th:src="@{/static/js/field.js}"></script>
+
 <script th:inline="javascript">
-    let bins = [[${bins}]];
+    let bins = [[${bins}]]
     let urlBin = [[${urlBin}]]
 </script>
 <script th:src="@{/static/js/index.js}"></script>

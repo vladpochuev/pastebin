@@ -17,11 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.Base64;
 import java.util.List;
 
@@ -29,10 +29,12 @@ import java.util.List;
 @RequestMapping("/map")
 public class MainController {
     private final BinDAO binDAO;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public MainController(BinDAO binDAO) {
+    public MainController(BinDAO binDAO, SimpMessagingTemplate messagingTemplate) {
         this.binDAO = binDAO;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("")
@@ -70,9 +72,9 @@ public class MainController {
         return message;
     }
 
-    @MessageMapping("/newBin")
-    @SendTo("/topic/binNotifications")
-    public BinNotification newBinWS(Bin bin) {
+    @MessageMapping("/createBin")
+    @SendTo("/topic/createdBinNotifications")
+    public BinNotification createBinWS(Bin bin) {
         HashGenerator hashGenerator = new HashGenerator(bin.getTitle(), System.nanoTime(), Math.floor(Math.random() * 1024));
         bin.setId(hashGenerator.getHash("SHA-1", 10));
 
@@ -86,9 +88,23 @@ public class MainController {
             return BinNotification.getFromBin(bin, StatusCode.ERROR);
         }
 
-        LinkHandler handler = new LinkHandler(bin.getId(), bin.getAmountOfTime(), binDAO);
+        LinkHandler handler = new LinkHandler(bin, bin.getAmountOfTime(), binDAO, messagingTemplate);
         handler.start();
         return BinNotification.getFromBin(bin, StatusCode.OK);
+    }
+
+    @MessageMapping("/deleteBin")
+    @SendTo("/topic/deletedBinNotifications")
+    public BinNotification deleteBinWS(String id) {
+        Bin bin;
+        try {
+            bin = binDAO.readById(id);
+            binDAO.delete(id);
+        } catch (Exception e) {
+            return BinNotification.getFromBin(new Bin(), StatusCode.ERROR);
+        }
+
+        return new BinNotification(id, bin.getTitle(), bin.getX(), bin.getY(), StatusCode.OK.getCode());
     }
 
     private void createBinWithBFS(Bin bin) {
