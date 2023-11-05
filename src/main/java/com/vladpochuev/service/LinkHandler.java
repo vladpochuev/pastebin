@@ -1,6 +1,5 @@
 package com.vladpochuev.service;
 
-import com.vladpochuev.controllers.MainController;
 import com.vladpochuev.dao.BinDAO;
 import com.vladpochuev.model.Bin;
 import com.vladpochuev.model.BinNotification;
@@ -47,7 +46,7 @@ public class LinkHandler extends Thread {
         ONE_DAY(ONE_HOUR.time * 24),
         ONE_WEEK(ONE_DAY.time * 7),
         ONE_MONTH(ONE_DAY.time * 30),
-        SIX_MONTH(ONE_MONTH.time * 6);
+        SIX_MONTHS(ONE_MONTH.time * 6);
 
         private final Long time;
         AmountOfTime(Long time) {

@@ -5,16 +5,16 @@ const extractData = (form) => {
         return
     }
 
-    let title = $(form + " .title").val()
-    let message = $(form + " .message").val()
+    let title = $(form + " .title").val().trim()
+    let message = $(form + " .message").val().trim()
     let amountOfTime = $(form + " .amount_of_time").val()
     let x, y
     if (form === '#drop-down' && $('#coords__input:checked').val() === 'on') {
-        x = $("#coords__x").val()
-        y = $("#coords__y").val()
+        x = $("#coords__x").val().trim()
+        y = $("#coords__y").val().trim()
     } else if (form === '#pop-up') {
         x = window.lastClickX
-        y = window.lastClickY
+        y = -window.lastClickY
     }
 
     const bin = {
@@ -24,8 +24,21 @@ const extractData = (form) => {
         x: x, y: y
     }
 
+    console.log(bin)
+
     ws.createBin(bin)
-    closePopup()
+    closePopup(form)
+    clearForm(form)
+}
+
+const clearForm = form => {
+    $(form + ' .title').val('')
+    $(form + " .message").val('')
+    $(form + " .amount_of_time").val('INFINITE')
+    if (form === '#drop-down') {
+        $("#coords__x").val('')
+        $("#coords__y").val('')
+    }
 }
 
 const decodeBins = () => {
@@ -43,8 +56,8 @@ const createBinsFromJSON = (json) => {
 }
 
 let mousePressed = false
-let clusterSizeX = Math.floor(window.innerWidth / 7)
-let clusterSizeY = Math.floor(window.innerWidth / 7)
+let clusterSizeX = window.innerWidth / 7
+let clusterSizeY = window.innerWidth / 7
 const amountOfCellsX = 100
 const amountOfCellsY = 100
 field = new Field(amountOfCellsX, amountOfCellsY)
@@ -62,18 +75,18 @@ const openPopup = (popup) => {
 }
 
 $('.close-popup').click(() => {
-    closePopup()
+    closePopup('#pop-up')
 })
 
 $('.popup-create-bg').click(e => {
     if (e.target.className === 'popup-create-bg' && confirm('Are you sure?')) {
-        closePopup()
+        closePopup('#pop-up')
     }
 })
 
 $('.popup-show-bg').click(e => {
-    if (e.target.className === 'popup-create-bg') {
-        closePopup()
+    if (e.target.className === 'popup-show-bg') {
+        closePopup('#pop-up')
     }
 })
 
@@ -97,10 +110,14 @@ toastr.options = {
 }
 
 
-const closePopup = () => {
-    $('.popup-create-bg').fadeOut(200)
-    $('.popup-show-bg').fadeOut(200)
-    $('html').removeClass('no-scroll')
+const closePopup = (form) => {
+    if(form === '#drop-down') {
+        $('#new-bin-checkbox').prop('checked', false)
+    } else if (form === '#pop-up') {
+        $('.popup-create-bg').fadeOut(200)
+        $('.popup-show-bg').fadeOut(200)
+        $('html').removeClass('no-scroll')
+    }
 }
 
 const getAndShowBin = (id) => {
@@ -110,10 +127,12 @@ const getAndShowBin = (id) => {
         dataType: 'json',
         data: {id: id},
         success: function (data) {
-            if (data.code === 0) {
+            if (data.code === 'OK') {
                 showBin(data)
-            } else if (data.code === 1) {
-                toastr.error("Error while getting the bin")
+            } else if(data.code === 'NO_SUCH_BIN') {
+                toastr.error('Bin was not found')
+            } else if (data.code === 'SERVER_ERROR') {
+                toastr.error('Error while getting the bin')
             }
         }
     })
@@ -147,11 +166,13 @@ $('#coords__input, #coords__auto').change(() => {
 })
 
 if (urlBin !== null) {
-    if (urlBin.code === 0) {
-        shiftCanvas(-urlBin.x * clusterSizeX, -urlBin.y * clusterSizeY)
+    if (urlBin.code === 'OK') {
+        shiftCanvas(-urlBin.x * clusterSizeX, urlBin.y * clusterSizeY)
         showBin(urlBin)
-    } else if (urlBin.code === 1) {
+    } else if (urlBin.code === 'NO_SUCH_BIN') {
         toastr.error("Bin was not found")
+    } else if (urlBin.code === 'SERVER_ERROR') {
+        toastr.error('Error while getting the bin')
     }
 }
 
@@ -168,3 +189,27 @@ const copyUrl = (id) => {
 
     toastr.success("Copied to clipboard")
 }
+
+const fillTimeOptions = () => {
+    const optionText = ['Never', '1 Minute', '10 Minutes', '1 Hour', '1 Day', '1 Week', '1 Month', '6 Month']
+    const optionValues = ['INFINITE', 'ONE_MINUTE', 'TEN_MINUTES', 'ONE_HOUR', 'ONE_DAY',
+        'ONE_WEEK', 'ONE_MONTH', 'SIX_MONTHS']
+    const select = $('.amount_of_time')
+
+    for (let i = 0; i < optionText.length; i++) {
+        console.log('cycle')
+        let option = $('<option></option>').attr('value', optionValues[i]).text(optionText[i])
+        select.append(option)
+    }
+}
+
+fillTimeOptions()
+
+$('#new-bin-checkbox').change(() => {
+    let inputs = $('#new-bin-menu input, #new-bin-menu select, #new-bin-menu textarea')
+    if($('#new-bin-checkbox').is(':checked')) {
+        setTimeout(() => inputs.removeAttr('tabindex'), 250 )
+    } else {
+        inputs.attr('tabindex', '-1')
+    }
+})

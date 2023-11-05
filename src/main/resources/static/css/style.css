@@ -4,6 +4,7 @@
 
 body {
     margin: 0;
+    overflow: hidden;
 }
 
 .current-coords {
@@ -38,7 +39,6 @@ body {
 .zoom-wrapper__row > button {
     width: 24px;
     height: 24px;
-    outline: none;
     font-size: 18px;
     background-color: white;
     border: 1px solid black;

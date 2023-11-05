@@ -6,7 +6,7 @@ const validateForm = (form) => {
         const input = formReq[i];
         formRemoveError(input)
 
-        if(input.value.length === 0) {
+        if(input.value.trim().length === 0) {
             formAddError(input)
             errorCounter++
         }

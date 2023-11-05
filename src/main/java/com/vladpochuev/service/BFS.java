@@ -3,23 +3,22 @@ package com.vladpochuev.service;
 import com.vladpochuev.dao.DAO;
 import com.vladpochuev.model.Placeable;
 import com.vladpochuev.model.Point;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Service
 public class BFS<Obj extends Placeable> {
     private final HashSet<Point> searched = new HashSet<>();
     private boolean[][] field;
     private final Deque<Point> deque = new ArrayDeque<>();
     private final DAO<Obj> dao;
 
-    private final int amountOfCellsX;
-    private final int amountOfCellsY;
+    private final int amountOfCellsX = 100;
+    private final int amountOfCellsY = 100;
 
-    public BFS(DAO<Obj> dao, int amountOfCellsX, int amountOfCellsY) {
+    public BFS(DAO<Obj> dao) {
         this.dao = dao;
-        this.amountOfCellsX = amountOfCellsX;
-        this.amountOfCellsY = amountOfCellsY;
-        fillField();
     }
 
     public Point findNearest() {
@@ -34,7 +33,7 @@ public class BFS<Obj extends Placeable> {
         return curPoint;
     }
 
-    private void fillField() {
+    public void fillField() {
         field = new boolean[amountOfCellsX * 2 + 1][amountOfCellsY * 2 + 1];
         List<Obj> objects = dao.readAll();
         for (Obj object : objects) {

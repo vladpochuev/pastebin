@@ -14,10 +14,10 @@ public class BinMessage {
     private String message;
     private Integer x;
     private Integer y;
-    private int code;
+    private String code;
 
     public static BinMessage getFromBin(Bin bin, StatusCode statusCode) {
         if(bin == null) return null;
-        return new BinMessage(bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(), statusCode.getCode());
+        return new BinMessage(bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(), statusCode.name());
     }
 }

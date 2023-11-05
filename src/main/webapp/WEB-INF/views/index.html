@@ -29,46 +29,37 @@
                 <form id="drop-down">
                     <h2 class="heading">New bin</h2>
                     <div class="create__title">
-                        <input type="text" class="title __req __max-length-100" id="create__title_input">
+                        <input tabindex="-1" type="text" class="title __req __max-length-100" id="create__title_input">
                         <label for="create__title_input"></label>
                     </div>
                     <div class="create__text">
-                        <textarea class="message __req __max-length-1000" id="create__textarea" rows="8"></textarea>
+                        <textarea tabindex="-1" class="message __req __max-length-1000" id="create__textarea" rows="8"></textarea>
                         <label for="create__textarea"></label>
                     </div>
 
                     <div class="coords">
                         <div class="coords__input">
                             <div class="coords__radio">
-                                <input type="radio" name="coords__radio" checked id="coords__input">
+                                <input tabindex="-1" type="radio" name="coords__radio" checked id="coords__input">
                                 <label for="coords__x">x:</label>
-                                <input type="text" class="__req __min-value_-100 __max-value_100" id="coords__x">
+                                <input tabindex="-1" type="text" class="__req __min-value_-100 __max-value_100" id="coords__x">
                                 <label for="coords__y">y:</label>
-                                <input type="text" class="__req __min-value_-100 __max-value_100" id="coords__y">
+                                <input tabindex="-1" type="text" class="__req __min-value_-100 __max-value_100" id="coords__y">
                             </div>
                         </div>
                         <div class="coords__radio">
                             <label>
-                                <input type="radio" name="coords__radio" id="coords__auto">
+                                <input tabindex="-1" type="radio" name="coords__radio" id="coords__auto">
                             </label>
                             nearest to center
                         </div>
                     </div>
 
                     <div class="get__time">
-                        <select class="amount_of_time">
-                            <option value="INFINITE">Never</option>
-                            <option value="ONE_MINUTE">1 Minute</option>
-                            <option value="TEN_MINUTES">10 Minutes</option>
-                            <option value="ONE_HOUR">1 Hour</option>
-                            <option value="ONE_DAY">1 Day</option>
-                            <option value="ONE_WEEK">1 Week</option>
-                            <option value="ONE_MONTH">1 Month</option>
-                            <option value="SIX_MONTH">6 Month</option>
-                        </select>
+                        <select tabindex="-1" class="amount_of_time"></select>
                     </div>
                     <div class="form_button">
-                        <button onclick="extractData('drop-down')">Submit</button>
+                        <button tabindex="-1" onclick="extractData('drop-down')">Submit</button>
                     </div>
                 </form>
             </div>
@@ -87,16 +78,7 @@
                 <label for="popup__message"></label>
                 <textarea class="message __req __max-length-1000" id="popup__message" rows="15"></textarea>
                 <div class="get__time">
-                    <select class="amount_of_time">
-                        <option value="INFINITE">Never</option>
-                        <option value="ONE_MINUTE">1 Minute</option>
-                        <option value="TEN_MINUTES">10 Minutes</option>
-                        <option value="ONE_HOUR">1 Hour</option>
-                        <option value="ONE_DAY">1 Day</option>
-                        <option value="ONE_WEEK">1 Week</option>
-                        <option value="ONE_MONTH">1 Month</option>
-                        <option value="SIX_MONTH">6 Month</option>
-                    </select>
+                    <select class="amount_of_time"></select>
                 </div>
                 <div class="form_button">
                     <button onclick="extractData('pop-up')" class="accordion-button">Submit</button>

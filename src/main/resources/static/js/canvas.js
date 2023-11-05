@@ -15,14 +15,14 @@ const initCanvas = () => {
     canvas.renderAll()
     setPanEvents(canvas)
     createGrid(clusterSizeX, clusterSizeY)
-    shiftCanvas(clusterSizeX * 3, clusterSizeY)
+    getIntoCenter()
 }
 
 const setPanEvents = (canvas) => {
     canvas.on('mouse:move', e => {
         const point = getExactPoint(e)
         const coords = document.querySelector(".current-coords")
-        coords.textContent = `(${point.x};${point.y})`
+        coords.textContent = `(${point.x};${-point.y})`
 
         if(mousePressed && e.button === 1) {
             canvas.setCursor('grab')
@@ -35,6 +35,7 @@ const setPanEvents = (canvas) => {
             mousePressed = true
             canvas.setCursor('grab')
         } else if(e.button === 3 && e.target == null) {
+            mousePressed = false
             let point = getExactPoint(e)
             window.lastClickX = point.x
             window.lastClickY = point.y
@@ -87,19 +88,45 @@ const createObject = (id, title, x, y) => {
         width: clusterSizeX,
         height: clusterSizeY,
         left: clusterSizeX/2 + (x * clusterSizeX),
-        top: clusterSizeY/2 + (y * clusterSizeY),
+        top: clusterSizeY/2 + -(y * clusterSizeY),
         fill: 'green',
         originX: 'center',
         originY: 'center',
     })
 
-    let text = new fabric.Text(
-        `(${x};${y})\n${title}\n${id}`, {
-            originX: 'center', originY: 'center',
-            left: clusterSizeX/2 + (x * clusterSizeX), top: clusterSizeY/2 + (y * clusterSizeY)
-        })
+    const trim = (string) => {
+        const maxSize = clusterSizeX
+        const ctx = canvas.getContext()
+        if (ctx.measureText(string).width * (clusterSizeX / 56) <= maxSize) {
+            return string
+        } else {
+            return findMaxLength(string, maxSize, ctx)
+        }
+    }
 
-    let group = new fabric.Group([rect, text], {hasControls: false,
+    const findMaxLength = (string, maxSize, ctx) => {
+        let len = ''
+        for (let i = 0;ctx.measureText(len + '...').width * (clusterSizeX / 56) <= maxSize; i++) {
+            len = string.substring(0, i)
+        }
+        return len + '...'
+    }
+
+    let text = trim(title) + '\n' +
+        trim(`(${x};${y})`) + '\n' +
+        trim(id)
+
+    let textBox = new fabric.Textbox(text, {
+        originX: 'center', originY: 'center',
+        left: clusterSizeX/2 + (x * clusterSizeX),
+        top: clusterSizeY/2 + -(y * clusterSizeY),
+        height: Math.floor(clusterSizeX),
+        width: Math.floor(clusterSizeY),
+        textAlign: 'center',
+        fontSize: clusterSizeY / 7
+    })
+
+    let group = new fabric.Group([rect, textBox], {hasControls: false,
         hasBorders: false,
         lockMovementX: true,
         name: id,
@@ -134,3 +161,15 @@ const createGrid = (x, y) => {
 const shiftCanvas = (x, y) => {
     canvas.relativePan(new fabric.Point(x, y))
 }
+
+const getIntoCenter = () => {
+    canvas.absolutePan(new fabric.Point(-clusterSizeX * 3, -clusterSizeY))
+}
+
+const resizeCanvas = () => {
+    canvas.setHeight(window.innerHeight);
+    canvas.setWidth(window.innerWidth);
+    canvas.renderAll();
+}
+
+window.addEventListener('resize', resizeCanvas, false);
