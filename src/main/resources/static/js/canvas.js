@@ -24,7 +24,7 @@ const setPanEvents = (canvas) => {
         const coords = document.querySelector(".current-coords")
         coords.textContent = `(${point.x};${-point.y})`
 
-        if(mousePressed && e.button === 1) {
+        if (mousePressed && e.button === 1) {
             canvas.setCursor('grab')
             shiftCanvas(e.e.movementX, e.e.movementY)
         }
@@ -58,15 +58,53 @@ const setPanEvents = (canvas) => {
     })
 }
 
+const restrictBorders = (newLeft, newTop, zoom) => {
+    if (newLeft < -clusterSizeX * 100) {
+        camera.left = -clusterSizeX * 100
+    } else if (newLeft + camera.width / zoom > clusterSizeX * 101) {
+        camera.left = clusterSizeX * 101 - camera.width / zoom
+    } else {
+        camera.left = newLeft
+    }
+
+    if (newTop < -clusterSizeY * 100) {
+        camera.top = -clusterSizeY * 100
+    } else if (newTop + camera.height / zoom > clusterSizeY * 101) {
+        camera.top = clusterSizeY * 101 - camera.height / zoom
+    } else {
+        camera.top = newTop
+    }
+}
+
+const moveInto = (newLeft, newTop, zoom) => {
+    restrictBorders(newLeft, newTop, zoom)
+
+    canvas.viewportTransform[4] = -camera.left * zoom;
+    canvas.viewportTransform[5] = -camera.top * zoom;
+
+    canvas.relativePan(new fabric.Point(0, 0))
+}
+
 const zoom = (delta, offsetX, offsetY) => {
-    let zoom = canvas.getZoom()
+    let zoom = canvas.getZoom();
     zoom *= 0.999 ** delta
 
     if (zoom > 3) zoom = 3
-    if (zoom < 0.05) zoom = 0.05
+    if (zoom < 0.15) zoom = 0.15
+
+    setZoomTitle(zoom)
+    canvas.zoomToPoint({ x: offsetX, y: offsetY }, zoom)
+
+    const newLeft = -canvas.viewportTransform[4] / zoom;
+    const newTop = -canvas.viewportTransform[5] / zoom;
+    moveInto(newLeft, newTop, zoom)
+
+    canvas.requestRenderAll()
+}
+
+const setZoomTitle = (zoom) => {
     const zoomLevel = document.querySelector('#zoom-level')
     zoomLevel.textContent = Math.ceil(zoom * 100) + "%"
-    canvas.zoomToPoint({ x: offsetX, y: offsetY }, zoom)
 }
 
 const getPointer = (e) => {
@@ -159,10 +197,20 @@ const createGrid = (x, y) => {
 }
 
 const shiftCanvas = (x, y) => {
-    canvas.relativePan(new fabric.Point(x, y))
+    const zoom = canvas.getZoom()
+    const newLeft = camera.left - x / zoom
+    const newTop = camera.top - y / zoom
+
+    moveInto(newLeft, newTop, zoom)
+
+    canvas.requestRenderAll();
 }
 
 const getIntoCenter = () => {
+    camera.left = -clusterSizeX * 3
+    camera.top = -clusterSizeY
+    canvas.viewportTransform[4] = -clusterSizeX * 3
+    canvas.viewportTransform[5] = -clusterSizeY
     canvas.absolutePan(new fabric.Point(-clusterSizeX * 3, -clusterSizeY))
 }
 

@@ -38,10 +38,10 @@ class WS {
                 </span></div>`, '', {onclick: function (e) {
                     if(e.target.className === 'link-icon-active') return
                     getIntoCenter()
-                    let x = (-message.x * clusterSizeX * canvas.getZoom())
-                    let y = (message.y * clusterSizeY * canvas.getZoom())
-                    shiftCanvas(x, y)
-                    openPopup()
+                    canvas.setZoom(1)
+                    setZoomTitle(1)
+                    shiftCanvas(-message.x * clusterSizeX, message.y * clusterSizeY)
+                    openPopup('popup-show')
                     getAndShowBin(message.id)
                 }})
         } else if (message.code === 'SERVER_ERROR') {
@@ -49,6 +49,8 @@ class WS {
         } else if (message.code === 'DUPLICATE') {
             toastr.error('Bin with selected coordinates already exists')
         }
+
+        console.log(field.getField());
     }
 
     getDeletedBin(message) {

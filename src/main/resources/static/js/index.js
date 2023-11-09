@@ -24,8 +24,6 @@ const extractData = (form) => {
         x: x, y: y
     }
 
-    console.log(bin)
-
     ws.createBin(bin)
     closePopup(form)
     clearForm(form)
@@ -58,10 +56,18 @@ const createBinsFromJSON = (json) => {
 let mousePressed = false
 let clusterSizeX = window.innerWidth / 7
 let clusterSizeY = window.innerWidth / 7
+
 const amountOfCellsX = 100
 const amountOfCellsY = 100
 field = new Field(amountOfCellsX, amountOfCellsY)
 let ws = new WS()
+
+const camera = {
+    left: 0,
+    top: 0,
+    width: window.innerWidth,
+    height: window.innerHeight
+}
 
 const canvas = createCanvas('canvas')
 initCanvas()
@@ -168,6 +174,7 @@ $('#coords__input, #coords__auto').change(() => {
 if (urlBin !== null) {
     if (urlBin.code === 'OK') {
         shiftCanvas(-urlBin.x * clusterSizeX, urlBin.y * clusterSizeY)
+        canvas.relativePan(new fabric.Point(0, 0))
         showBin(urlBin)
     } else if (urlBin.code === 'NO_SUCH_BIN') {
         toastr.error("Bin was not found")

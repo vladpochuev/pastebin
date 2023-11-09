@@ -9,6 +9,10 @@ class Field {
         this.fillArray()
     }
 
+    getField() {
+        return this.#field
+    }
+
     fillArray () {
         this.#field = []
         for (let i = 0; i <= this.#amountOfCellsX * 2 + 1; i++) {
@@ -17,18 +21,18 @@ class Field {
     }
 
     create(obj, x, y) {
-        this.#field[x + this.#amountOfCellsX][y + this.#amountOfCellsY] = obj
+        this.#field[x + this.#amountOfCellsX][-y + this.#amountOfCellsY] = obj
     }
 
     read(x, y) {
-        return this.#field[x + this.#amountOfCellsX][y + this.#amountOfCellsY]
+        return this.#field[x + this.#amountOfCellsX][-y + this.#amountOfCellsY]
     }
 
     update(obj, x, y) {
-        this.#field[x + this.#amountOfCellsX][y + this.#amountOfCellsY] = obj
+        this.#field[x + this.#amountOfCellsX][-y + this.#amountOfCellsY] = obj
     }
 
     delete(x, y) {
-        this.#field[x + this.#amountOfCellsX][y + this.#amountOfCellsY] = null
+        this.#field[x + this.#amountOfCellsX][-y + this.#amountOfCellsY] = null
     }
 }
