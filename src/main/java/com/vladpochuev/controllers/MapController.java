@@ -31,13 +31,11 @@ import java.util.List;
 @RequestMapping("/map")
 public class MapController {
     private final BinDAO binDAO;
-    private final BFS<Bin> bfs;
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public MapController(BinDAO binDAO, BFS<Bin> bfs, SimpMessagingTemplate messagingTemplate) {
+    public MapController(BinDAO binDAO, SimpMessagingTemplate messagingTemplate) {
         this.binDAO = binDAO;
-        this.bfs = bfs;
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -121,6 +119,7 @@ public class MapController {
     }
 
     private void createBinWithBFS(Bin bin) {
+        BFS<Bin> bfs = new BFS<>(binDAO);
         bfs.fillField();
         while (true) {
             try {

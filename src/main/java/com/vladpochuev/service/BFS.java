@@ -3,11 +3,9 @@ package com.vladpochuev.service;
 import com.vladpochuev.dao.DAO;
 import com.vladpochuev.model.Placeable;
 import com.vladpochuev.model.Point;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Service
 public class BFS<Obj extends Placeable> {
     private final HashSet<Point> searched = new HashSet<>();
     private boolean[][] field;
@@ -30,6 +28,7 @@ public class BFS<Obj extends Placeable> {
         }
 
         field[curPoint.getX() + amountOfCellsX][curPoint.getY() + amountOfCellsY] = true;
+        System.out.println(deque);
         return curPoint;
     }
 
