@@ -10,7 +10,6 @@
 
 <h1 class="current-coords"></h1>
 <canvas id="canvas"></canvas>
-<!--<canvas id="minimap" width="130" height="130" style="position: absolute; top: 10px; left: 10px;"></canvas>-->
 <div class="ui-wrapper">
     <div class="zoom-wrapper">
         <div class="zoom-wrapper__row">
@@ -33,7 +32,7 @@
                         <label for="create__title_input"></label>
                     </div>
                     <div class="create__text">
-                        <textarea tabindex="-1" class="message __req __max-length-1000" id="create__textarea" rows="8"></textarea>
+                        <textarea tabindex="-1" class="message __req __max-length-1000" id="create__textarea" rows="7"></textarea>
                         <label for="create__textarea"></label>
                     </div>
 
@@ -53,6 +52,10 @@
                             </label>
                             nearest to center
                         </div>
+                    </div>
+
+                    <div class="form-color">
+                        <input value="#008000" data-jscolor="" class="color">
                     </div>
 
                     <div class="get__time">
@@ -76,7 +79,10 @@
                 <label for="popup__title"></label>
                 <input type="text" class="title __req __max-length-100" id="popup__title">
                 <label for="popup__message"></label>
-                <textarea class="message __req __max-length-1000" id="popup__message" rows="15"></textarea>
+                <textarea class="message __req __max-length-1000" id="popup__message" rows="13"></textarea>
+                <div class="form-color">
+                    <input value="#008000" data-jscolor="" class="color">
+                </div>
                 <div class="get__time">
                     <select class="amount_of_time"></select>
                 </div>

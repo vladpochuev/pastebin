@@ -8,6 +8,7 @@ const extractData = (form) => {
     let title = $(form + " .title").val().trim()
     let message = $(form + " .message").val().trim()
     let amountOfTime = $(form + " .amount_of_time").val()
+    let color = $(form + " .form-color input").val()
     let x, y
     if (form === '#drop-down' && $('#coords__input:checked').val() === 'on') {
         x = $("#coords__x").val().trim()
@@ -21,6 +22,7 @@ const extractData = (form) => {
         title: title,
         message: message,
         amountOfTime: amountOfTime,
+        color: color,
         x: x, y: y
     }
 
@@ -50,7 +52,7 @@ const decodeBins = () => {
 
 const createBinsFromJSON = (json) => {
     let jsonObject = JSON.parse(json)
-    jsonObject.forEach(a => createObject(a.id, a.title, a.x, a.y))
+    jsonObject.forEach(o => createObject(o.id, o.title, o.x, o.y, o.color))
 }
 
 let mousePressed = false

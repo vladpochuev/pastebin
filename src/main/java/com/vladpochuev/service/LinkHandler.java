@@ -3,39 +3,44 @@ package com.vladpochuev.service;
 import com.vladpochuev.dao.BinDAO;
 import com.vladpochuev.model.Bin;
 import com.vladpochuev.model.BinNotification;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
-public class LinkHandler extends Thread {
-    private final Bin bin;
-    private final String amountOfTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+@Service
+public class LinkHandler {
     private final BinDAO binDAO;
-    private final SimpMessagingTemplate template;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public LinkHandler(Bin bin, String amountOfTime, BinDAO binDAO, SimpMessagingTemplate template) {
-        this.bin = bin;
+    @Autowired
+    public LinkHandler(BinDAO binDAO, SimpMessagingTemplate messagingTemplate) {
         this.binDAO = binDAO;
-        this.amountOfTime = amountOfTime;
-        this.template = template;
+        this.messagingTemplate = messagingTemplate;
     }
 
-    @Override
-    public void run() {
-        try {
-            Long amountOfTime = getAmountOfTime(this.amountOfTime);
-            if(amountOfTime == null) return;
-            System.out.println("bin " + bin.getId() + " was added to queue for " + amountOfTime + " ms");
-            Thread.sleep(amountOfTime);
-            binDAO.delete(bin.getId());
-            template.convertAndSend("/topic/deletedBinNotifications", BinNotification.getFromBin(bin, StatusCode.OK));
-            System.out.println("bin " + bin.getId() + " was removed");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    public String getExpirationTime(String amountOfTime) {
+        Long time = AmountOfTime.valueOf(amountOfTime).time;
+        if(time == null) return null;
+        ZonedDateTime expirationTime = ZonedDateTime.now().plus(time, ChronoUnit.MILLIS);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return expirationTime.format(dtf);
+    }
+
+    @Scheduled(fixedDelay = 60000)
+    public void deleteExpiredBins() {
+        List<Bin> bins = binDAO.readExpired();
+        for (Bin bin : bins) {
+            System.out.println(bin.getId() + " was deleted");
+            messagingTemplate.convertAndSend("/topic/deletedBinNotifications",
+                    BinNotification.getFromBin(bin, StatusCode.OK));
         }
-    }
-
-    private Long getAmountOfTime(String time) {
-        AmountOfTime amountOfTime = AmountOfTime.valueOf(time);
-        return amountOfTime.time;
+        binDAO.deleteExpired();
     }
 
     enum AmountOfTime {

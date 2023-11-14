@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -23,6 +24,7 @@ import javax.sql.DataSource;
 @ComponentScan("com.vladpochuev")
 @PropertySource("classpath:application.properties")
 @EnableWebMvc
+@EnableScheduling
 public class SpringConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;

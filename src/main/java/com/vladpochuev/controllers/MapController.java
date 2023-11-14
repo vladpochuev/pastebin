@@ -19,11 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.List;
 
@@ -31,12 +31,12 @@ import java.util.List;
 @RequestMapping("/map")
 public class MapController {
     private final BinDAO binDAO;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final LinkHandler linkHandler;
 
     @Autowired
-    public MapController(BinDAO binDAO, SimpMessagingTemplate messagingTemplate) {
+    public MapController(BinDAO binDAO, LinkHandler linkHandler) {
         this.binDAO = binDAO;
-        this.messagingTemplate = messagingTemplate;
+        this.linkHandler = linkHandler;
     }
 
     @GetMapping("")
@@ -47,7 +47,7 @@ public class MapController {
         model.addAttribute("urlBin", urlBin);
 
         try {
-            List<Bin> bins = binDAO.readAll();
+            List<Bin> bins = binDAO.read();
             ObjectMapper mapper = new ObjectMapper();
             byte[] bytes = mapper.writeValueAsBytes(bins);
             String byteString = Base64.getEncoder().encodeToString(bytes);
@@ -84,6 +84,9 @@ public class MapController {
         HashGenerator hashGenerator = new HashGenerator(bin.getTitle(), System.nanoTime(), Math.floor(Math.random() * 1024));
         bin.setId(hashGenerator.getHash("SHA-1", 10));
 
+        String expirationTime = linkHandler.getExpirationTime(bin.getAmountOfTime());
+        bin.setExpirationTime(expirationTime);
+
         try {
             if (bin.getX() == null && bin.getY() == null) {
                 createBinWithBFS(bin);
@@ -96,9 +99,21 @@ public class MapController {
             return BinNotification.getFromBin(bin, StatusCode.DUPLICATE);
         }
 
-        LinkHandler handler = new LinkHandler(bin, bin.getAmountOfTime(), binDAO, messagingTemplate);
-        handler.start();
         return BinNotification.getFromBin(bin, StatusCode.OK);
+    }
+
+    private void createBinWithBFS(Bin bin) {
+        while (true) {
+            BFS<Bin> bfs = new BFS<>(binDAO);
+            bfs.fillField();
+            try {
+                Point coords = bfs.findNearest();
+                bin.setX(coords.getX());
+                bin.setY(coords.getY());
+                binDAO.create(bin);
+                break;
+            } catch (DuplicateKeyException ignored) {}
+        }
     }
 
     @MessageMapping("/deleteBin")
@@ -116,19 +131,5 @@ public class MapController {
             return BinNotification.getFromBin(new Bin(), StatusCode.SERVER_ERROR);
         }
         return BinNotification.getFromBin(bin, StatusCode.OK);
-    }
-
-    private void createBinWithBFS(Bin bin) {
-        BFS<Bin> bfs = new BFS<>(binDAO);
-        bfs.fillField();
-        while (true) {
-            try {
-                Point coords = bfs.findNearest();
-                bin.setX(coords.getX());
-                bin.setY(coords.getY());
-                binDAO.create(bin);
-                break;
-            } catch (DuplicateKeyException ignored) {}
-        }
     }
 }

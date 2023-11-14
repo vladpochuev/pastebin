@@ -121,13 +121,13 @@ const getExactPoint = (e) => {
     return new fabric.Point(x,y)
 }
 
-const createObject = (id, title, x, y) => {
+const createObject = (id, title, x, y, color) => {
     const rect = new fabric.Rect({
         width: clusterSizeX,
         height: clusterSizeY,
         left: clusterSizeX/2 + (x * clusterSizeX),
         top: clusterSizeY/2 + -(y * clusterSizeY),
-        fill: 'green',
+        fill: color,
         originX: 'center',
         originY: 'center',
     })
@@ -150,9 +150,19 @@ const createObject = (id, title, x, y) => {
         return len + '...'
     }
 
-    let text = trim(title) + '\n' +
+    const text = trim(title) + '\n' +
         trim(`(${x};${y})`) + '\n' +
         trim(id)
+
+    const defineTextColor = backgroundColor => {
+        const rgb = parseInt(backgroundColor.substring(1), 16)
+        const r = (rgb >> 16) & 0xff
+        const g = (rgb >> 8) & 0xff
+        const b = (rgb >> 0) & 0xff
+
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000
+        return brightness < 70 ? '#C5C5C5' : '#101010'
+    }
 
     let textBox = new fabric.Textbox(text, {
         originX: 'center', originY: 'center',
@@ -161,6 +171,7 @@ const createObject = (id, title, x, y) => {
         height: Math.floor(clusterSizeX),
         width: Math.floor(clusterSizeY),
         textAlign: 'center',
+        fill: defineTextColor(color),
         fontSize: clusterSizeY / 7
     })
 

@@ -13,9 +13,11 @@ public class BinNotification {
     private String title;
     private Integer x;
     private Integer y;
+    private String color;
     private String code;
 
     public static BinNotification getFromBin(Bin bin, StatusCode statusCode) {
-        return new BinNotification(bin.getId(), bin.getTitle(), bin.getX(), bin.getY(), statusCode.name());
+        return new BinNotification(bin.getId(), bin.getTitle(), bin.getX(), bin.getY(),
+                bin.getColor(), statusCode.name());
     }
 }

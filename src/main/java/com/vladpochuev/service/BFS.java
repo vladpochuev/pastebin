@@ -28,13 +28,12 @@ public class BFS<Obj extends Placeable> {
         }
 
         field[curPoint.getX() + amountOfCellsX][curPoint.getY() + amountOfCellsY] = true;
-        System.out.println(deque);
         return curPoint;
     }
 
     public void fillField() {
         field = new boolean[amountOfCellsX * 2 + 1][amountOfCellsY * 2 + 1];
-        List<Obj> objects = dao.readAll();
+        List<Obj> objects = dao.read();
         for (Obj object : objects) {
             field[object.getX() + amountOfCellsX][object.getY() + amountOfCellsY] = true;
         }

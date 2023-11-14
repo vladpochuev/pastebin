@@ -119,7 +119,6 @@ input:checked ~ #new-bin-menu {
 
 .title {
     width: 100%;
-    margin: 10px 0 0 0;
 }
 
 .message {
@@ -144,6 +143,19 @@ input:checked ~ #new-bin-menu {
 .coords input {
     margin: 0 10px;
     width: 30px;
+}
+
+.form-color {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.color {
+    margin-top: 10px;
+    width: 60px;
+    border: 1px solid grey;
+    border-radius: 2px;
 }
 
 .form_button {

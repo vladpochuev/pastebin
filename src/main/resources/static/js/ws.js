@@ -31,7 +31,7 @@ class WS {
             const linkIconUrl = $('[data-link-icon-url]').attr('data-link-icon-url')
             const linkIconActiveUrl = $('[data-link-icon-active-url]').attr('data-link-icon-active-url')
 
-            createObject(message.id, message.title, message.x, message.y)
+            createObject(message.id, message.title, message.x, message.y, message.color)
             toastr.success(`<div class='toast__new-bin'><span>Bin was successfully created</span> <span class='toast__link'>
                 <img src='${linkIconUrl}' height='16px' width='16px' alt='ad'>
                 <img src='${linkIconActiveUrl}' class='link-icon-active' height='16px' width='16px' alt='ad' onclick="copyUrl('${message.id}')">

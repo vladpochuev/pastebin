@@ -1,13 +1,13 @@
 package com.vladpochuev.dao;
 
 import com.vladpochuev.model.Bin;
-import com.vladpochuev.model.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Component
@@ -21,39 +21,41 @@ public class BinDAO implements DAO<Bin> {
 
     @Override
     public void create(Bin bin) throws DuplicateKeyException {
+        Timestamp timestamp = bin.getExpirationTime() == null ? null : Timestamp.valueOf(bin.getExpirationTime());
         jdbcTemplate.update("BEGIN;" +
                         "LOCK TABLE bin IN EXCLUSIVE MODE;" +
-                        "INSERT INTO bin(id, title, message, x, y) VALUES(?, ?, ?, ?, ?);" +
-                        "COMMIT", bin.getId(),
-                bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY());
+                        "INSERT INTO bin(id, title, message, x, y, color, amountOfTime, expirationTime)" +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?);" +
+                        "COMMIT", bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(),
+                bin.getColor(), bin.getAmountOfTime(), timestamp);
     }
 
     @Override
-    public List<Bin> readAll() {
-        return jdbcTemplate.query("SELECT * FROM bin", new BeanPropertyRowMapper<>(Bin.class));
+    public List<Bin> read() {
+        return jdbcTemplate.query("SELECT * FROM bin",
+                new BeanPropertyRowMapper<>(Bin.class));
     }
 
-    @Override
+    public List<Bin> readExpired() {return jdbcTemplate.query("SELECT * FROM bin WHERE expirationTime < NOW() ",
+            new BeanPropertyRowMapper<>(Bin.class));}
+
     public Bin readById(String id) {
         return jdbcTemplate.query("SELECT * FROM bin WHERE id=?",
                 new BeanPropertyRowMapper<>(Bin.class), id).stream().findAny().orElse(null);
     }
 
     @Override
-    public Bin readByCoords(Point point) {
-        return jdbcTemplate.query("SELECT * FROM bin WHERE x=? AND y=?",
-                        new BeanPropertyRowMapper<>(Bin.class), point.getX(), point.getY())
-                .stream().findAny().orElse(null);
-    }
-
-    @Override
     public void update(Bin bin) {
-        jdbcTemplate.update("UPDATE bin SET title=?, message=?, x=?, y=? WHERE id=?", bin.getTitle(),
-                bin.getMessage(), bin.getX(), bin.getY(), bin.getId());
+        jdbcTemplate.update("UPDATE bin SET title=?, message=?, x=?, y=?, color=?, expirationTime=? WHERE id=?",
+                bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(), bin.getColor(), bin.getExpirationTime(), bin.getId());
     }
 
     @Override
     public void delete(String id) {
         jdbcTemplate.update("DELETE FROM bin WHERE id=?", id);
+    }
+
+    public void deleteExpired() {
+        jdbcTemplate.update("DELETE FROM bin WHERE expirationTime < NOW()");
     }
 }
