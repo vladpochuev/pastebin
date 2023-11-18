@@ -1,6 +1,5 @@
 package com.vladpochuev.model;
 
-import com.vladpochuev.service.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,10 +13,9 @@ public class BinNotification {
     private Integer x;
     private Integer y;
     private String color;
-    private String code;
 
-    public static BinNotification getFromBin(Bin bin, StatusCode statusCode) {
+    public static BinNotification getFromBin(Bin bin) {
         return new BinNotification(bin.getId(), bin.getTitle(), bin.getX(), bin.getY(),
-                bin.getColor(), statusCode.name());
+                bin.getColor());
     }
 }

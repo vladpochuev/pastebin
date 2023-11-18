@@ -4,6 +4,8 @@ import com.vladpochuev.dao.BinDAO;
 import com.vladpochuev.model.Bin;
 import com.vladpochuev.model.BinNotification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class LinkHandler {
         for (Bin bin : bins) {
             System.out.println(bin.getId() + " was deleted");
             messagingTemplate.convertAndSend("/topic/deletedBinNotifications",
-                    BinNotification.getFromBin(bin, StatusCode.OK));
+                    new ResponseEntity<>(BinNotification.getFromBin(bin), HttpStatus.OK));
         }
         binDAO.deleteExpired();
     }

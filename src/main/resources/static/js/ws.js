@@ -27,40 +27,42 @@ class WS {
     }
 
     getNewBin(message) {
-        if(message.code === 'OK') {
+        if(message.statusCode === 'OK') {
             const linkIconUrl = $('[data-link-icon-url]').attr('data-link-icon-url')
             const linkIconActiveUrl = $('[data-link-icon-active-url]').attr('data-link-icon-active-url')
 
-            createObject(message.id, message.title, message.x, message.y, message.color)
+            const body = message.body
+
+            createObject(body.id, body.title, body.x, body.y, body.color)
             toastr.success(`<div class='toast__new-bin'><span>Bin was successfully created</span> <span class='toast__link'>
                 <img src='${linkIconUrl}' height='16px' width='16px' alt='ad'>
-                <img src='${linkIconActiveUrl}' class='link-icon-active' height='16px' width='16px' alt='ad' onclick="copyUrl('${message.id}')">
+                <img src='${linkIconActiveUrl}' class='link-icon-active' height='16px' width='16px' alt='ad' onclick="copyUrl('${body.id}')">
                 </span></div>`, '', {onclick: function (e) {
                     if(e.target.className === 'link-icon-active') return
                     getIntoCenter()
                     canvas.setZoom(1)
                     setZoomTitle(1)
-                    shiftCanvas(-message.x * clusterSizeX, message.y * clusterSizeY)
+                    shiftCanvas(-body.x * clusterSizeX, body.y * clusterSizeY)
                     openPopup('popup-show')
-                    getAndShowBin(message.id)
+                    getAndShowBin(body.id)
                 }})
-        } else if (message.code === 'SERVER_ERROR') {
+        } else if (message.statusCode === 'INTERNAL_SERVER_ERROR') {
             toastr.error('Error while deploying the bin')
-        } else if (message.code === 'DUPLICATE') {
+        } else if (message.statusCode === 'CONFLICT') {
             toastr.error('Bin with selected coordinates already exists')
         }
-
-        console.log(field.getField());
     }
 
     getDeletedBin(message) {
-        if(message.code === 'OK') {
-            canvas.remove(field.read(message.x, message.y))
-            field.delete(message.x, message.y)
+        const body = message.body
+
+        if(message.statusCode === 'OK') {
+            canvas.remove(field.read(body.x, body.y))
+            field.delete(body.x, body.y)
             toastr.success('Bin was successfully deleted')
-        } else if (message.code === 'SERVER_ERROR') {
+        } else if (message.statusCode === 'INTERNAL_SERVER_ERROR') {
             toastr.error('Error while deleting the bin')
-        } else if (message.code === 'NO_SUCH_BIN') {
+        } else if (message.statusCode === 'NOT_FOUND') {
             toastr.error('Bin was not found')
         }
         closePopup('#pop-up')

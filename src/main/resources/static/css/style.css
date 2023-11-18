@@ -1,5 +1,5 @@
 * {
-    box-sizing: content-box;
+    box-sizing: border-box;
 }
 
 body {
@@ -47,16 +47,6 @@ body {
     user-select: none;
 }
 
-.minimap {
-    border: 1px solid blue;
-    position: absolute !important;
-    top: 20px;
-    left: 20px;
-}
-.design {
-    border: 1px solid black;
-}
-
 .new-bin-wrapper {
     position: relative;
     width: 300px;
@@ -72,7 +62,6 @@ body {
     height: 100%;
     width: 100%;
 }
-
 
 #new-bin-label {
     display: block;
@@ -125,6 +114,7 @@ input:checked ~ #new-bin-menu {
     resize: none;
     width: 100%;
     margin-top: 10px;
+    height: 100px;
 }
 
 .coords {
@@ -152,6 +142,7 @@ input:checked ~ #new-bin-menu {
 }
 
 .color {
+    box-sizing: content-box;
     margin-top: 10px;
     width: 60px;
     border: 1px solid grey;
@@ -242,5 +233,6 @@ input:checked ~ #new-bin-menu {
 }
 
 .__error {
+    padding: -2px;
     border: 2px solid red;
 }

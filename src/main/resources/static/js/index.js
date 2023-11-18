@@ -135,11 +135,12 @@ const getAndShowBin = (id) => {
         dataType: 'json',
         data: {id: id},
         success: function (data) {
-            if (data.code === 'OK') {
-                showBin(data)
-            } else if(data.code === 'NO_SUCH_BIN') {
+            showBin(data)
+        },
+        error: function (data) {
+            if(data.code === 'NOT_FOUND') {
                 toastr.error('Bin was not found')
-            } else if (data.code === 'SERVER_ERROR') {
+            } else if (data.code === 'INTERNAL_SERVER_ERROR') {
                 toastr.error('Error while getting the bin')
             }
         }
@@ -174,14 +175,12 @@ $('#coords__input, #coords__auto').change(() => {
 })
 
 if (urlBin !== null) {
-    if (urlBin.code === 'OK') {
-        shiftCanvas(-urlBin.x * clusterSizeX, urlBin.y * clusterSizeY)
+    if (urlBin.statusCode === 'OK') {
+        shiftCanvas(-urlBin.body.x * clusterSizeX, urlBin.body.y * clusterSizeY)
         canvas.relativePan(new fabric.Point(0, 0))
-        showBin(urlBin)
-    } else if (urlBin.code === 'NO_SUCH_BIN') {
+        showBin(urlBin.body)
+    } else if (urlBin.statusCode === 'NOT_FOUND') {
         toastr.error("Bin was not found")
-    } else if (urlBin.code === 'SERVER_ERROR') {
-        toastr.error('Error while getting the bin')
     }
 }
 

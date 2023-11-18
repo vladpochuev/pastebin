@@ -1,6 +1,5 @@
 package com.vladpochuev.model;
 
-import com.vladpochuev.service.StatusCode;
 import lombok.*;
 
 @Data
@@ -15,11 +14,10 @@ public class BinMessage {
     private Integer x;
     private Integer y;
     private String expirationTime;
-    private String code;
 
-    public static BinMessage getFromBin(Bin bin, StatusCode statusCode) {
+    public static BinMessage getFromBin(Bin bin) {
         if(bin == null) return null;
         return new BinMessage(bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(),
-                bin.getExpirationTime(), statusCode.name());
+                bin.getExpirationTime());
     }
 }
