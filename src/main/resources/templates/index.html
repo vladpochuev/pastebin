@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/static/css/style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/static/css/lib/toastr.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/lib/toastr.min.css}">
     <title>Title</title>
 </head>
 <body oncontextmenu="return false">
@@ -72,7 +72,7 @@
 
 <div class="popup-create-bg">
     <div class="popup-create">
-        <img class="close-popup" th:src="@{/static/images/close-icon.png}" height="25px" width="25px" alt="">
+        <img class="close-popup" th:src="@{/images/close-icon.png}" height="25px" width="25px" alt="">
         <div class="popup__content">
             <h2 class="heading">New bin</h2>
             <form id="pop-up">
@@ -96,7 +96,7 @@
 
 <div class="popup-show-bg">
     <div class="popup-show">
-        <img class="close-popup" th:src="@{/static/images/close-icon.png}" height="25px" width="25px" alt="">
+        <img class="close-popup" th:src="@{/images/close-icon.png}" height="25px" width="25px" alt="">
         <div class="popup__content">
             <h2 class="show__title">Title</h2>
             <div class="show__info">
@@ -112,24 +112,24 @@
 </div>
 
 
-<div th:attr="data-link-icon-url=@{/static/images/link-icon.png}"></div>
-<div th:attr="data-link-icon-active-url=@{/static/images/link-icon-active.png}"></div>
+<div th:attr="data-link-icon-url=@{/images/link-icon.png}"></div>
+<div th:attr="data-link-icon-active-url=@{/images/link-icon-active.png}"></div>
 
-<script th:src="@{/static/js/lib/jscolor.min.js}"></script>
-<script th:src="@{/static/js/lib/fabric.min.js}"></script>
-<script th:src="@{/static/js/lib/jquery.min.js}"></script>
-<script th:src="@{/static/js/lib/sockjs.min.js}"></script>
-<script th:src="@{/static/js/lib/stomp.min.js}"></script>
-<script th:src="@{/static/js/lib/toastr.min.js}"></script>
-<script th:src="@{/static/js/canvas.js}"></script>
-<script th:src="@{/static/js/ws.js}"></script>
-<script th:src="@{/static/js/formValidator.js}"></script>
-<script th:src="@{/static/js/field.js}"></script>
+<script th:src="@{/js/lib/jscolor.min.js}"></script>
+<script th:src="@{/js/lib/fabric.min.js}"></script>
+<script th:src="@{/js/lib/jquery.min.js}"></script>
+<script th:src="@{/js/lib/sockjs.min.js}"></script>
+<script th:src="@{/js/lib/stomp.min.js}"></script>
+<script th:src="@{/js/lib/toastr.min.js}"></script>
+<script th:src="@{/js/canvas.js}"></script>
+<script th:src="@{/js/ws.js}"></script>
+<script th:src="@{/js/formValidator.js}"></script>
+<script th:src="@{/js/field.js}"></script>
 
 <script th:inline="javascript">
     let bins = [[${bins}]]
     let urlBin = [[${urlBin}]]
 </script>
-<script th:src="@{/static/js/index.js}"></script>
+<script th:src="@{/js/index.js}"></script>
 </body>
 </html>
