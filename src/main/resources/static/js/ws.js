@@ -3,7 +3,7 @@ class WS {
     connected = false
     
     connect() {
-        let socket = new SockJS('/stomp-endpoint')
+        let socket = new SockJS('/api/stomp-endpoint')
         const self = this
         self.stompClient = Stomp.over(socket)
         self.stompClient.connect({}, function (frame) {

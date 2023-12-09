@@ -130,7 +130,7 @@ const closePopup = (form) => {
 
 const getAndShowBin = (id) => {
     $.ajax({
-        url: '/map/bin',
+        url: '/api/bin',
         method: 'get',
         dataType: 'json',
         data: {id: id},
@@ -205,7 +205,6 @@ const fillTimeOptions = () => {
     const select = $('.amount_of_time')
 
     for (let i = 0; i < optionText.length; i++) {
-        console.log('cycle')
         let option = $('<option></option>').attr('value', optionValues[i]).text(optionText[i])
         select.append(option)
     }
