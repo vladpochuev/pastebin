@@ -8,6 +8,7 @@ class WS {
         self.stompClient = Stomp.over(socket)
         self.stompClient.connect({}, function (frame) {
             self.connected = true
+            checkBinToCreate()
             console.log('Connected: ' + frame)
             self.stompClient.subscribe('/topic/createdBinNotifications', function (message) {
                 self.getNewBin(JSON.parse(message.body))
@@ -19,21 +20,25 @@ class WS {
     }
 
     createBin(bin) {
-        this.stompClient.send('/app/createBin', {}, JSON.stringify(bin))
+        this.stompClient.send('/app/createBin', {clientId: window.clientId}, JSON.stringify(bin))
     }
     
     deleteBin(id) {
-        this.stompClient.send('/app/deleteBin', {}, id)
+        this.stompClient.send('/app/deleteBin', {clientId: window.clientId}, id)
     }
 
     getNewBin(message) {
-        if(message.statusCode === 'OK') {
+        const body = message.body
+        const clientId = message.headers.clientId[0]
+
+        if (message.statusCode === 'OK') {
             const linkIconUrl = $('[data-link-icon-url]').attr('data-link-icon-url')
             const linkIconActiveUrl = $('[data-link-icon-active-url]').attr('data-link-icon-active-url')
 
-            const body = message.body
-
             createObject(body.id, body.title, body.x, body.y, body.color)
+
+            if(clientId !== window.clientId) return
+
             toastr.success(`<div class='toast__new-bin'><span>Bin was successfully created</span> <span class='toast__link'>
                 <img src='${linkIconUrl}' height='16px' width='16px' alt='ad'>
                 <img src='${linkIconActiveUrl}' class='link-icon-active' height='16px' width='16px' alt='ad' onclick="copyUrl('${body.id}')">
@@ -46,26 +51,52 @@ class WS {
                     openPopup('popup-show')
                     getAndShowBin(body.id)
                 }})
-        } else if (message.statusCode === 'INTERNAL_SERVER_ERROR') {
+        }
+
+        if(clientId !== window.clientId) return
+
+        if (message.statusCode === 'INTERNAL_SERVER_ERROR') {
             toastr.error('Error while deploying the bin')
         } else if (message.statusCode === 'CONFLICT') {
             toastr.error('Bin with selected coordinates already exists')
+        } else if (message.statusCode === 'UNAUTHORIZED') {
+            const binJSON = JSON.stringify(message.headers.binToCreate[0])
+            this.redirectToLogin('binToCreate', binJSON)
         }
     }
 
     getDeletedBin(message) {
         const body = message.body
+        const headers = message.headers
 
         if(message.statusCode === 'OK') {
             canvas.remove(field.read(body.x, body.y))
             field.delete(body.x, body.y)
-            toastr.success('Bin was successfully deleted')
-        } else if (message.statusCode === 'INTERNAL_SERVER_ERROR') {
+            if(headers !== null && headers.clientId[0] === window.clientId) {
+                toastr.success('Bin was successfully deleted')
+            }
+        }
+
+        if(headers.clientId[0] !== window.clientId) return
+
+        if (message.statusCode === 'INTERNAL_SERVER_ERROR') {
             toastr.error('Error while deleting the bin')
         } else if (message.statusCode === 'NOT_FOUND') {
             toastr.error('Bin was not found')
+        } else if (message.statusCode === 'FORBIDDEN') {
+            toastr.error('Bin does not belong to you')
+        } else if (message.statusCode === 'UNAUTHORIZED') {
+            this.redirectToLogin()
         }
         closePopup('#pop-up')
+    }
+
+    redirectToLogin(parName, parValue) {
+        let login = new URL(location.protocol + location.host + '/login')
+        if(parName && parValue) {
+            login.searchParams.set(parName, parValue)
+        }
+        document.location.href = login.toString()
     }
 }
 

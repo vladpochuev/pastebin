@@ -63,6 +63,7 @@ const amountOfCellsX = 100
 const amountOfCellsY = 100
 field = new Field(amountOfCellsX, amountOfCellsY)
 let ws = new WS()
+window.clientId = crypto.randomUUID()
 
 const camera = {
     left: 0,
@@ -184,8 +185,17 @@ if (urlBin !== null) {
     }
 }
 
+const binToCreate = new URLSearchParams(window.location.search).get('binToCreate')
+
+const checkBinToCreate = () => {
+    if(binToCreate !== null && binToCreate !== "") {
+        let bin = atob(binToCreate.substring(1, binToCreate.length-1));
+        let binObject = JSON.parse(bin)
+        ws.createBin(binObject)
+    }
+}
+
 const copyUrl = (id) => {
-    console.log('copyUrl')
     const sysInput = document.createElement('input')
     let url = new URL(location.href)
     url.searchParams.set('id', id)

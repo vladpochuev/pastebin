@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladpochuev.dao.BinDAO;
 import com.vladpochuev.model.Bin;
 import com.vladpochuev.model.BinMessage;
-import com.vladpochuev.service.LinkHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +16,12 @@ import java.util.Base64;
 import java.util.List;
 
 @Controller
-public class MapController {
+public class MainController {
     private final BinDAO binDAO;
-    private final LinkHandler linkHandler;
 
     @Autowired
-    public MapController(BinDAO binDAO, LinkHandler linkHandler) {
+    public MainController(BinDAO binDAO) {
         this.binDAO = binDAO;
-        this.linkHandler = linkHandler;
     }
 
     @GetMapping("/")
@@ -49,6 +46,12 @@ public class MapController {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/login")
+    public String getLoginPage(@RequestParam(value = "binToCreate", required = false) String bin, Model model) {
+        model.addAttribute("binToCreate", bin);
+        return "/login";
     }
 
     private ResponseEntity<BinMessage> defineMessage(Bin selectedBin) {

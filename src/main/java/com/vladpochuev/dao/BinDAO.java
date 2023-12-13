@@ -24,10 +24,10 @@ public class BinDAO implements DAO<Bin> {
         Timestamp timestamp = bin.getExpirationTime() == null ? null : Timestamp.valueOf(bin.getExpirationTime());
         jdbcTemplate.update("BEGIN;" +
                         "LOCK TABLE bin IN EXCLUSIVE MODE;" +
-                        "INSERT INTO bin(id, title, message, x, y, color, amountOfTime, expirationTime)" +
-                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?);" +
+                        "INSERT INTO bin(id, title, message, x, y, color, expirationTime, amountOfTime, username)" +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);" +
                         "COMMIT", bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(),
-                bin.getColor(), bin.getAmountOfTime(), timestamp);
+                bin.getColor(), timestamp, bin.getAmountOfTime(), bin.getUsername());
     }
 
     @Override
@@ -46,8 +46,8 @@ public class BinDAO implements DAO<Bin> {
 
     @Override
     public void update(Bin bin) {
-        jdbcTemplate.update("UPDATE bin SET title=?, message=?, x=?, y=?, color=?, expirationTime=? WHERE id=?",
-                bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(), bin.getColor(), bin.getExpirationTime(), bin.getId());
+        jdbcTemplate.update("UPDATE bin SET title=?, message=?, color=? WHERE id=?",
+                bin.getTitle(), bin.getMessage(), bin.getColor(), bin.getId());
     }
 
     @Override

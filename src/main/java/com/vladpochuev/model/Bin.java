@@ -18,5 +18,6 @@ public class Bin implements Placeable {
     private String color;
     private String amountOfTime;
     private String expirationTime;
+    private String username;
 }
 

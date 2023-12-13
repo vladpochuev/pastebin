@@ -18,14 +18,14 @@ public class JdbcUserDetailService extends MappingSqlQuery<UserDetails> implemen
 
     public JdbcUserDetailService(DataSource ds) {
         super(ds, """
-            select
+            SELECT
             users.username,
             users.password,
-            array_agg(user_authorities.authority) as authorities
-            from users
-            left join user_authorities on user_authorities.id_user = users.id
-            where users.username = :username
-            group by users.id
+            array_agg(user_authorities.authority) AS authorities
+            FROM users
+            LEFT JOIN user_authorities ON user_authorities.id_user = users.id
+            WHERE users.username = :username
+            GROUP BY users.id
         """);
         this.declareParameter(new SqlParameter("username", Types.VARCHAR));
         this.compile();

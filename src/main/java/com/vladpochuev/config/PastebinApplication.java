@@ -21,11 +21,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 import javax.sql.DataSource;
+import java.net.URI;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Map;
 
 @SpringBootApplication
 @ComponentScan("com.vladpochuev")
@@ -88,12 +92,19 @@ public class PastebinApplication {
         tokenCookieSessionAuthenticationStrategy.setTokenStringSerializer(tokenCookieJweStringSerializer);
 
         http
-                .formLogin(Customizer.withDefaults())
+                .formLogin(conf -> conf
+                        .loginPage("/login")
+                        .successHandler((request, response, authentication) -> {
+                            String bin = request.getParameter("binToCreate");
+                            String url = bin.equals("") ? "/map" : "/map?binToCreate=" + bin;
+                            response.sendRedirect(url);
+                        }))
                 .addFilterAfter(new GetCsrfTokenFilter(), ExceptionTranslationFilter.class)
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers(
                                         "/error",
+                                        "/login",
                                         "/",
                                         "/map",
                                         "/css/**",
