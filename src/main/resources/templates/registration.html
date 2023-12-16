@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Registration page</title>
 </head>
 <body>
 
-<h2>Login Page</h2>
+<h2>Registration Page</h2>
 
 <div th:if="${param.error}" style="color: red">
     <p>Invalid credentials. Please try again.</p>
 </div>
-<div th:if="${param.logout}" style="color: green">
-    <p>You have been signed out</p>
-</div>
 
-<form th:action="@{/login}" method="post">
+<form th:action="@{/signup}" th:method="POST">
     <input type="hidden" name="binToCreate" th:value="${param.binToCreate}">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
@@ -24,14 +21,12 @@
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required>
     <br>
-    <button type="submit">Login</button>
+    <button type="submit">Sign up</button>
 </form>
 
 <br>
 <br>
-<button onclick="redirectTo('/signup', 'binToCreate', new URLSearchParams(window.location.search).get('binToCreate'))">
-    Sign up
-</button>
+<button onclick="redirectTo('/login', 'binToCreate', new URLSearchParams(window.location.search).get('binToCreate'))">Log in</button>
 
 <script th:src="@{/js/index.js}"></script>
 </body>

@@ -61,7 +61,7 @@ class WS {
             toastr.error('Bin with selected coordinates already exists')
         } else if (message.statusCode === 'UNAUTHORIZED') {
             const binJSON = JSON.stringify(message.headers.binToCreate[0])
-            this.redirectToLogin('binToCreate', binJSON)
+            redirectTo('/login', 'binToCreate', binJSON)
         }
     }
 
@@ -86,17 +86,9 @@ class WS {
         } else if (message.statusCode === 'FORBIDDEN') {
             toastr.error('Bin does not belong to you')
         } else if (message.statusCode === 'UNAUTHORIZED') {
-            this.redirectToLogin()
+            redirectTo('/register')
         }
         closePopup('#pop-up')
-    }
-
-    redirectToLogin(parName, parValue) {
-        let login = new URL(location.protocol + location.host + '/login')
-        if(parName && parValue) {
-            login.searchParams.set(parName, parValue)
-        }
-        document.location.href = login.toString()
     }
 }
 

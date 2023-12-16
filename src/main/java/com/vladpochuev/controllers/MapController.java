@@ -16,11 +16,11 @@ import java.util.Base64;
 import java.util.List;
 
 @Controller
-public class MainController {
+public class MapController {
     private final BinDAO binDAO;
 
     @Autowired
-    public MainController(BinDAO binDAO) {
+    public MapController(BinDAO binDAO) {
         this.binDAO = binDAO;
     }
 
@@ -46,12 +46,6 @@ public class MainController {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @GetMapping("/login")
-    public String getLoginPage(@RequestParam(value = "binToCreate", required = false) String bin, Model model) {
-        model.addAttribute("binToCreate", bin);
-        return "/login";
     }
 
     private ResponseEntity<BinMessage> defineMessage(Bin selectedBin) {

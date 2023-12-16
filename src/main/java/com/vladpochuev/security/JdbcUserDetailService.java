@@ -20,12 +20,9 @@ public class JdbcUserDetailService extends MappingSqlQuery<UserDetails> implemen
         super(ds, """
             SELECT
             users.username,
-            users.password,
-            array_agg(user_authorities.authority) AS authorities
+            users.password
             FROM users
-            LEFT JOIN user_authorities ON user_authorities.id_user = users.id
             WHERE users.username = :username
-            GROUP BY users.id
         """);
         this.declareParameter(new SqlParameter("username", Types.VARCHAR));
         this.compile();
@@ -36,7 +33,7 @@ public class JdbcUserDetailService extends MappingSqlQuery<UserDetails> implemen
         return User.builder()
                 .username(rs.getString("username"))
                 .password(rs.getString("password"))
-                .authorities((String[])rs.getArray("authorities").getArray())
+                .authorities(Roles.ROLE_USER.name())
                 .build();
     }
 

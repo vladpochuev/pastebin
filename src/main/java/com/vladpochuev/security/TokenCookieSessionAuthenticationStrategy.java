@@ -15,6 +15,7 @@ import java.util.function.Function;
 public class TokenCookieSessionAuthenticationStrategy implements SessionAuthenticationStrategy {
     private Function<Authentication, Token> tokenCookieFactory = new DefaultTokenCookieFactory();
     private Function<Token, String> tokenStringSerializer = Object::toString;
+
     @Override
     public void onAuthentication(Authentication authentication, HttpServletRequest request, HttpServletResponse response) throws SessionAuthenticationException {
         if(authentication instanceof UsernamePasswordAuthenticationToken) {

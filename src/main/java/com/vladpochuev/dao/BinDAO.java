@@ -22,11 +22,14 @@ public class BinDAO implements DAO<Bin> {
     @Override
     public void create(Bin bin) throws DuplicateKeyException {
         Timestamp timestamp = bin.getExpirationTime() == null ? null : Timestamp.valueOf(bin.getExpirationTime());
-        jdbcTemplate.update("BEGIN;" +
-                        "LOCK TABLE bin IN EXCLUSIVE MODE;" +
-                        "INSERT INTO bin(id, title, message, x, y, color, expirationTime, amountOfTime, username)" +
-                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);" +
-                        "COMMIT", bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(),
+        jdbcTemplate.update("""
+                                    BEGIN;
+                                    LOCK TABLE bin IN EXCLUSIVE MODE;
+                                    INSERT INTO bin(id, title, message, x, y, color,
+                                     expirationTime, amountOfTime, username)
+                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
+                                    COMMIT;
+        """, bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(),
                 bin.getColor(), timestamp, bin.getAmountOfTime(), bin.getUsername());
     }
 

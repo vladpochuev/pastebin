@@ -4,6 +4,7 @@ import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.vladpochuev.dao.UserDAO;
 import com.vladpochuev.model.DbProperties;
 import com.vladpochuev.security.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,10 +16,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -26,10 +30,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 import javax.sql.DataSource;
-import java.net.URI;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Map;
 
 @SpringBootApplication
 @ComponentScan("com.vladpochuev")
@@ -87,7 +88,8 @@ public class PastebinApplication {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             TokenCookieAuthenticationConfigurer tokenCookieAuthenticationConfigurer,
-            TokenCookieJweStringSerializer tokenCookieJweStringSerializer) throws Exception {
+            TokenCookieJweStringSerializer tokenCookieJweStringSerializer,
+            RegistrationAuthenticationFilter registrationAuthenticationFilter) throws Exception {
         TokenCookieSessionAuthenticationStrategy tokenCookieSessionAuthenticationStrategy = new TokenCookieSessionAuthenticationStrategy();
         tokenCookieSessionAuthenticationStrategy.setTokenStringSerializer(tokenCookieJweStringSerializer);
 
@@ -100,17 +102,20 @@ public class PastebinApplication {
                             response.sendRedirect(url);
                         }))
                 .addFilterAfter(new GetCsrfTokenFilter(), ExceptionTranslationFilter.class)
+                .addFilterBefore(registrationAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers(
                                         "/error",
-                                        "/login",
                                         "/",
                                         "/map",
                                         "/css/**",
                                         "/js/**",
                                         "/images/**",
                                         "/api/**").permitAll()
+                                .requestMatchers(
+                                        "/login",
+                                        "/signup").anonymous()
                                 .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -126,7 +131,24 @@ public class PastebinApplication {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
     public UserDetailsService userDetailsService(DataSource dataSource) {
         return new JdbcUserDetailService(dataSource);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public RegistrationAuthenticationFilter registrationAuthenticationFilter(AuthenticationManager authenticationManager,
+                                                                             UserDAO userDAO,
+                                                                             TokenCookieJweStringSerializer serializer) {
+        return new RegistrationAuthenticationFilter(authenticationManager, userDAO, passwordEncoder(), serializer);
     }
 }
