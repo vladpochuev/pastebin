@@ -1,6 +1,9 @@
 package com.vladpochuev.model;
 
+import com.vladpochuev.service.FirestoreMessageService;
 import lombok.*;
+
+import java.util.concurrent.ExecutionException;
 
 @Data
 @NoArgsConstructor
@@ -16,9 +19,14 @@ public class BinMessage {
     private String expirationTime;
     private String username;
 
-    public static BinMessage getFromBin(Bin bin) {
+    public static BinMessage getFromBinEntity(BinEntity bin, FirestoreMessageService messageService) {
         if(bin == null) return null;
-        return new BinMessage(bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(),
-                bin.getExpirationTime(), bin.getUsername());
+        try {
+            FirestoreMessageEntity entity = messageService.read(bin.getMessageUUID());
+            return new BinMessage(bin.getId(), bin.getTitle(), entity.getMessage(), bin.getX(), bin.getY(),
+                    bin.getExpirationTime(), bin.getUsername());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

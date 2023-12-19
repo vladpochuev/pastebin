@@ -3,8 +3,9 @@ package com.vladpochuev.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladpochuev.dao.BinDAO;
-import com.vladpochuev.model.Bin;
+import com.vladpochuev.model.BinEntity;
 import com.vladpochuev.model.BinMessage;
+import com.vladpochuev.service.FirestoreMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,12 @@ import java.util.List;
 @Controller
 public class MapController {
     private final BinDAO binDAO;
+    private final FirestoreMessageService messageService;
 
     @Autowired
-    public MapController(BinDAO binDAO) {
+    public MapController(BinDAO binDAO, FirestoreMessageService messageService) {
         this.binDAO = binDAO;
+        this.messageService = messageService;
     }
 
     @GetMapping("/")
@@ -31,15 +34,15 @@ public class MapController {
 
     @GetMapping("/map")
     public String getMenu(Model model, @RequestParam(value = "id", required = false) String id) {
-        Bin selectedBin = binDAO.readById(id);
+        BinEntity selectedBinEntity = binDAO.readById(id);
 
-        ResponseEntity<BinMessage> urlBin = id == null ? null : defineMessage(selectedBin);
+        ResponseEntity<BinMessage> urlBin = id == null ? null : defineMessage(selectedBinEntity);
         model.addAttribute("urlBin", urlBin);
 
         try {
-            List<Bin> bins = binDAO.read();
+            List<BinEntity> binEntities = binDAO.read();
             ObjectMapper mapper = new ObjectMapper();
-            byte[] bytes = mapper.writeValueAsBytes(bins);
+            byte[] bytes = mapper.writeValueAsBytes(binEntities);
             String byteString = Base64.getEncoder().encodeToString(bytes);
             model.addAttribute("bins", byteString);
             return "map";
@@ -48,9 +51,9 @@ public class MapController {
         }
     }
 
-    private ResponseEntity<BinMessage> defineMessage(Bin selectedBin) {
-        if(selectedBin != null) {
-            return new ResponseEntity<>(BinMessage.getFromBin(selectedBin), HttpStatus.OK);
+    private ResponseEntity<BinMessage> defineMessage(BinEntity selectedBinEntity) {
+        if(selectedBinEntity != null) {
+            return new ResponseEntity<>(BinMessage.getFromBinEntity(selectedBinEntity, messageService), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

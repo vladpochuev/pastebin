@@ -27,7 +27,7 @@ public class TokenCookieAuthenticationConfigurer
                     if (authentication != null &&
                             authentication.getPrincipal() instanceof TokenUser user) {
                         this.jdbcTemplate.update(
-                                "INSERT INTO deactivated_tokens (id, keep_until) VALUES (?, ?)",
+                                "INSERT INTO deactivated_tokens (id, expirationTime) VALUES (?, ?)",
                                 user.getToken().id(), Date.from(user.getToken().expiresAt()));
 
                         response.setStatus(HttpServletResponse.SC_NO_CONTENT);

@@ -1,6 +1,6 @@
 package com.vladpochuev.dao;
 
-import com.vladpochuev.model.Bin;
+import com.vladpochuev.model.BinEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Component
-public class BinDAO implements DAO<Bin> {
+public class BinDAO implements DAO<BinEntity> {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -20,37 +20,37 @@ public class BinDAO implements DAO<Bin> {
     }
 
     @Override
-    public void create(Bin bin) throws DuplicateKeyException {
-        Timestamp timestamp = bin.getExpirationTime() == null ? null : Timestamp.valueOf(bin.getExpirationTime());
+    public void create(BinEntity binEntity) throws DuplicateKeyException {
+        Timestamp timestamp = binEntity.getExpirationTime() == null ? null : Timestamp.valueOf(binEntity.getExpirationTime());
         jdbcTemplate.update("""
                                     BEGIN;
                                     LOCK TABLE bin IN EXCLUSIVE MODE;
-                                    INSERT INTO bin(id, title, message, x, y, color,
+                                    INSERT INTO bin(id, title, messageUUID, x, y, color,
                                      expirationTime, amountOfTime, username)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
                                     COMMIT;
-        """, bin.getId(), bin.getTitle(), bin.getMessage(), bin.getX(), bin.getY(),
-                bin.getColor(), timestamp, bin.getAmountOfTime(), bin.getUsername());
+        """, binEntity.getId(), binEntity.getTitle(), binEntity.getMessageUUID(), binEntity.getX(), binEntity.getY(),
+                binEntity.getColor(), timestamp, binEntity.getAmountOfTime(), binEntity.getUsername());
     }
 
     @Override
-    public List<Bin> read() {
+    public List<BinEntity> read() {
         return jdbcTemplate.query("SELECT * FROM bin",
-                new BeanPropertyRowMapper<>(Bin.class));
+                new BeanPropertyRowMapper<>(BinEntity.class));
     }
 
-    public List<Bin> readExpired() {return jdbcTemplate.query("SELECT * FROM bin WHERE expirationTime < NOW() ",
-            new BeanPropertyRowMapper<>(Bin.class));}
+    public List<BinEntity> readExpired() {return jdbcTemplate.query("SELECT * FROM bin WHERE expirationTime < NOW() ",
+            new BeanPropertyRowMapper<>(BinEntity.class));}
 
-    public Bin readById(String id) {
+    public BinEntity readById(String id) {
         return jdbcTemplate.query("SELECT * FROM bin WHERE id=?",
-                new BeanPropertyRowMapper<>(Bin.class), id).stream().findAny().orElse(null);
+                new BeanPropertyRowMapper<>(BinEntity.class), id).stream().findAny().orElse(null);
     }
 
     @Override
-    public void update(Bin bin) {
-        jdbcTemplate.update("UPDATE bin SET title=?, message=?, color=? WHERE id=?",
-                bin.getTitle(), bin.getMessage(), bin.getColor(), bin.getId());
+    public void update(BinEntity binEntity) {
+        jdbcTemplate.update("UPDATE bin SET title=?, messageUUID=?, color=? WHERE id=?",
+                binEntity.getTitle(), binEntity.getMessageUUID(), binEntity.getColor(), binEntity.getId());
     }
 
     @Override

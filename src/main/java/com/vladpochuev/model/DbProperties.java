@@ -12,4 +12,6 @@ public class DbProperties {
     private String username;
     @Value("${db.password}")
     private String password;
+    @Value("${db.firebase-key-location}")
+    private String firebaseKeyLocation;
 }

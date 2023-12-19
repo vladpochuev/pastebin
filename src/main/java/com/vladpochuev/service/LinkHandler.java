@@ -1,7 +1,7 @@
 package com.vladpochuev.service;
 
 import com.vladpochuev.dao.BinDAO;
-import com.vladpochuev.model.Bin;
+import com.vladpochuev.model.BinEntity;
 import com.vladpochuev.model.BinNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,16 +14,19 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class LinkHandler {
     private final BinDAO binDAO;
     private final SimpMessagingTemplate messagingTemplate;
+    private final FirestoreMessageService messageService;
 
     @Autowired
-    public LinkHandler(BinDAO binDAO, SimpMessagingTemplate messagingTemplate) {
+    public LinkHandler(BinDAO binDAO, SimpMessagingTemplate messagingTemplate, FirestoreMessageService messageService) {
         this.binDAO = binDAO;
         this.messagingTemplate = messagingTemplate;
+        this.messageService = messageService;
     }
 
     public String getExpirationTime(String amountOfTime) {
@@ -34,13 +37,14 @@ public class LinkHandler {
         return expirationTime.format(dtf);
     }
 
-    @Scheduled(fixedDelay = 60000)
-    public void deleteExpiredBins() {
-        List<Bin> bins = binDAO.readExpired();
-        for (Bin bin : bins) {
-            System.out.println(bin.getId() + " was deleted");
+    @Scheduled(fixedDelay = 30000)
+    public void deleteExpiredBins() throws ExecutionException, InterruptedException {
+        List<BinEntity> binEntities = binDAO.readExpired();
+        for (BinEntity binEntity : binEntities) {
+            messageService.delete(binEntity.getMessageUUID());
+            System.out.println(binEntity.getId() + " was deleted");
             messagingTemplate.convertAndSend("/topic/deletedBinNotifications",
-                    new ResponseEntity<>(BinNotification.getFromBin(bin), HttpStatus.OK));
+                    new ResponseEntity<>(BinNotification.getFromBin(binEntity), HttpStatus.OK));
         }
         binDAO.deleteExpired();
     }

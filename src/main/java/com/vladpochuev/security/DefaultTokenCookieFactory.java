@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public class DefaultTokenCookieFactory implements Function<Authentication, Token> {
-    private Duration tokenTtl = Duration.ofDays(1);
+    private final Duration tokenTtl = Duration.ofDays(1);
     @Override
     public Token apply(Authentication authentication) {
         Instant now = Instant.now();

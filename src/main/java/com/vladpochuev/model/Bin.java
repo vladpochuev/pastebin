@@ -1,23 +1,15 @@
 package com.vladpochuev.model;
 
-import lombok.*;
-
-import java.sql.Timestamp;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-public class Bin implements Placeable {
-    private String id;
+public class Bin {
     private String title;
     private String message;
     private Integer x;
     private Integer y;
     private String color;
     private String amountOfTime;
-    private String expirationTime;
-    private String username;
 }
-

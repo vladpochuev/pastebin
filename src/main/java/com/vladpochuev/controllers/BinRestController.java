@@ -3,12 +3,9 @@ package com.vladpochuev.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladpochuev.dao.BinDAO;
-import com.vladpochuev.model.Bin;
-import com.vladpochuev.model.BinMessage;
-import com.vladpochuev.model.BinNotification;
-import com.vladpochuev.model.Point;
-import com.vladpochuev.security.TokenCookieSessionAuthenticationStrategy;
+import com.vladpochuev.model.*;
 import com.vladpochuev.service.BFS;
+import com.vladpochuev.service.FirestoreMessageService;
 import com.vladpochuev.service.HashGenerator;
 import com.vladpochuev.service.LinkHandler;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -17,16 +14,9 @@ import org.springframework.dao.QueryTimeoutException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,34 +24,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api")
 public class BinRestController {
     private final BinDAO binDAO;
     private final LinkHandler linkHandler;
+    private final FirestoreMessageService messageService;
 
-    public BinRestController(BinDAO binDAO, LinkHandler linkHandler) {
+    public BinRestController(BinDAO binDAO, LinkHandler linkHandler, FirestoreMessageService messageService) {
         this.binDAO = binDAO;
         this.linkHandler = linkHandler;
+        this.messageService = messageService;
     }
 
     @GetMapping("/bin")
     public ResponseEntity<BinMessage> getBin(@RequestParam("id") String id) {
         try {
-            Bin bin = binDAO.readById(id);
-            return defineMessage(bin);
+            BinEntity binEntity = binDAO.readById(id);
+            return defineMessage(binEntity);
         } catch (DataAccessResourceFailureException | QueryTimeoutException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    private ResponseEntity<BinMessage> defineMessage(Bin selectedBin) {
-        if(selectedBin != null) {
-            return new ResponseEntity<>(BinMessage.getFromBin(selectedBin), HttpStatus.OK);
+    private ResponseEntity<BinMessage> defineMessage(BinEntity selectedBinEntity) {
+        if(selectedBinEntity != null) {
+            return new ResponseEntity<>(BinMessage.getFromBinEntity(selectedBinEntity, messageService), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -69,7 +60,8 @@ public class BinRestController {
 
     @MessageMapping({"/createBin"})
     @SendTo("/topic/createdBinNotifications")
-    public ResponseEntity<BinNotification> createBinWS(Bin bin, Principal principal, StompHeaderAccessor accessor) throws JsonProcessingException {
+    public ResponseEntity<BinNotification> createBinWS(Bin bin, Principal principal, StompHeaderAccessor accessor)
+            throws JsonProcessingException, ExecutionException, InterruptedException {
         HttpHeaders headers = new HttpHeaders();
         String clientId = accessor.getFirstNativeHeader("clientId");
         headers.add("clientId", clientId);
@@ -82,17 +74,19 @@ public class BinRestController {
         }
 
         HashGenerator hashGenerator = new HashGenerator(bin.getTitle(), System.nanoTime(), Math.floor(Math.random() * 1024));
-        bin.setId(hashGenerator.getHash("SHA-1", 10));
-
+        String id = hashGenerator.getHash("SHA-1", 10);
         String expirationTime = linkHandler.getExpirationTime(bin.getAmountOfTime());
-        bin.setExpirationTime(expirationTime);
-        bin.setUsername(principal.getName());
+        String username = principal.getName();
+        String messageUUID = UUID.randomUUID().toString();
+        messageService.create(new FirestoreMessageEntity(messageUUID, bin.getMessage()));
 
+        BinEntity binEntity = new BinEntity(id, bin.getTitle(), messageUUID, bin.getX(), bin.getY(), bin.getColor(),
+                bin.getAmountOfTime(), expirationTime, username);
         try {
             if (bin.getX() == null && bin.getY() == null) {
-                createBinWithBFS(bin);
+                createBinWithBFS(binEntity);
             } else {
-                binDAO.create(bin);
+                binDAO.create(binEntity);
             }
         } catch (DataAccessResourceFailureException | QueryTimeoutException e) {
             return new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -100,18 +94,18 @@ public class BinRestController {
             return new ResponseEntity<>(headers, HttpStatus.CONFLICT);
         }
 
-        return new ResponseEntity<>(BinNotification.getFromBin(bin), headers, HttpStatus.OK);
+        return new ResponseEntity<>(BinNotification.getFromBin(binEntity), headers, HttpStatus.OK);
     }
 
-    private void createBinWithBFS(Bin bin) {
+    private void createBinWithBFS(BinEntity binEntity) {
         while (true) {
-            BFS<Bin> bfs = new BFS<>(binDAO);
+            BFS<BinEntity> bfs = new BFS<>(binDAO);
             bfs.fillField();
             try {
                 Point coords = bfs.findNearest();
-                bin.setX(coords.getX());
-                bin.setY(coords.getY());
-                binDAO.create(bin);
+                binEntity.setX(coords.getX());
+                binEntity.setY(coords.getY());
+                binDAO.create(binEntity);
                 break;
             } catch (DuplicateKeyException ignored) {}
         }
@@ -119,7 +113,8 @@ public class BinRestController {
 
     @MessageMapping("/deleteBin")
     @SendTo("/topic/deletedBinNotifications")
-    public ResponseEntity<BinNotification> deleteBinWS(String id, Principal principal, StompHeaderAccessor accessor) {
+    public ResponseEntity<BinNotification> deleteBinWS(String id, Principal principal, StompHeaderAccessor accessor)
+            throws ExecutionException, InterruptedException {
         HttpHeaders headers = new HttpHeaders();
         String clientId = accessor.getFirstNativeHeader("clientId");
         headers.add("clientId", clientId);
@@ -129,19 +124,20 @@ public class BinRestController {
             return new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
         }
 
-        Bin bin;
+        BinEntity binEntity;
         try {
-            bin = binDAO.readById(id);
+            binEntity = binDAO.readById(id);
 
-            if(bin == null) return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+            if(binEntity == null) return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 
-            if(!bin.getUsername().equals(principal.getName())) {
+            if(!binEntity.getUsername().equals(principal.getName())) {
                 return new ResponseEntity<>(headers, HttpStatus.FORBIDDEN);
             }
             binDAO.delete(id);
+            messageService.delete(binEntity.getMessageUUID());
         } catch (DataAccessResourceFailureException | QueryTimeoutException e) {
             return new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(BinNotification.getFromBin(bin), headers, HttpStatus.OK);
+        return new ResponseEntity<>(BinNotification.getFromBin(binEntity), headers, HttpStatus.OK);
     }
 }
