@@ -87,7 +87,8 @@ const moveInto = (newLeft, newTop, zoom) => {
 
 const zoom = (delta, offsetX, offsetY) => {
     let zoom = canvas.getZoom();
-    zoom *= 0.999 ** delta
+    console.log('delta:' + delta)
+    zoom *= 0.999 ** (delta * window.devicePixelRatio)
 
     if (zoom > 3) zoom = 3
     if (zoom < 0.15) zoom = 0.15
@@ -144,8 +145,19 @@ const createObject = (id, title, x, y, color) => {
 
     const findMaxLength = (string, maxSize, ctx) => {
         let len = ''
-        for (let i = 0;ctx.measureText(len + '...').width * (clusterSizeX / 56) <= maxSize; i++) {
-            len = string.substring(0, i)
+        let prevSurrogate = ''
+        for (let i = 0; (ctx.measureText(len + '...' + prevSurrogate).width * (maxSize / 56) <= maxSize) && i < string.length; i++) {
+            let char = string.charAt(i)
+            if (char.match(/\p{Surrogate}/gu)) {
+                if (prevSurrogate === '') {
+                    prevSurrogate = char
+                } else {
+                    len += prevSurrogate + char
+                    prevSurrogate = ''
+                }
+            } else {
+                len += char
+            }
         }
         return len + '...'
     }
@@ -209,8 +221,8 @@ const createGrid = (x, y) => {
 
 const shiftCanvas = (x, y) => {
     const zoom = canvas.getZoom()
-    const newLeft = camera.left - x / zoom
-    const newTop = camera.top - y / zoom
+    const newLeft = camera.left - (x / zoom) / window.devicePixelRatio
+    const newTop = camera.top - (y / zoom) / window.devicePixelRatio
 
     moveInto(newLeft, newTop, zoom)
 

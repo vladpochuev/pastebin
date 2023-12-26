@@ -40,3 +40,5 @@ build/
 ### Applicaton properties ###
 src/main/resources/application.yml
 src/main/resources/firebaseKey.json
+src/main/java/Test.java
+src/main/resources/static/js/test.js

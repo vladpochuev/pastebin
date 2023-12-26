@@ -6,7 +6,10 @@ import com.vladpochuev.dao.BinDAO;
 import com.vladpochuev.model.BinEntity;
 import com.vladpochuev.model.BinMessage;
 import com.vladpochuev.service.FirestoreMessageService;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -38,14 +41,16 @@ public class MapController {
 
         ResponseEntity<BinMessage> urlBin = id == null ? null : defineMessage(selectedBinEntity);
         model.addAttribute("urlBin", urlBin);
+        model.addAttribute("bins", getBinEntities());
+        return "map";
+    }
 
+    private String getBinEntities() {
         try {
             List<BinEntity> binEntities = binDAO.read();
             ObjectMapper mapper = new ObjectMapper();
             byte[] bytes = mapper.writeValueAsBytes(binEntities);
-            String byteString = Base64.getEncoder().encodeToString(bytes);
-            model.addAttribute("bins", byteString);
-            return "map";
+            return Base64.getEncoder().encodeToString(bytes);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

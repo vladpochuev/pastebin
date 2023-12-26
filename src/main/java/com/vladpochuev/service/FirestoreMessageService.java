@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class FirestoreMessageService {
     private static final String COLLECTION_NAME = "messages";
-    public void create(FirestoreMessageEntity entity) throws ExecutionException, InterruptedException {
+    public void sendCreate(FirestoreMessageEntity entity) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         dbFirestore.collection(COLLECTION_NAME).document(entity.getUUID()).set(entity);
     }
@@ -24,7 +24,7 @@ public class FirestoreMessageService {
         return snapshot.exists() ? snapshot.toObject(FirestoreMessageEntity.class) : null;
     }
 
-    public void delete(String name) throws ExecutionException, InterruptedException {
+    public void sendDelete(String name) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         dbFirestore.collection(COLLECTION_NAME).document(name).delete();
     }

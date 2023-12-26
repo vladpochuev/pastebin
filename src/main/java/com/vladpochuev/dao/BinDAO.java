@@ -57,8 +57,4 @@ public class BinDAO implements DAO<BinEntity> {
     public void delete(String id) {
         jdbcTemplate.update("DELETE FROM bin WHERE id=?", id);
     }
-
-    public void deleteExpired() {
-        jdbcTemplate.update("DELETE FROM bin WHERE expirationTime < NOW()");
-    }
 }

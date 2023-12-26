@@ -14,7 +14,7 @@ public class BinNotification {
     private Integer y;
     private String color;
 
-    public static BinNotification getFromBin(BinEntity binEntity) {
+    public static BinNotification getFromBinEntity(BinEntity binEntity) {
         return new BinNotification(binEntity.getId(), binEntity.getTitle(), binEntity.getX(), binEntity.getY(),
                 binEntity.getColor());
     }

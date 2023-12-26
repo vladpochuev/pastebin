@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/map.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/lib/toastr.min.css}">
     <title>Bins</title>
 </head>
@@ -107,7 +108,7 @@
                 Aspernatur at autem dolorem itaque laudantium, libero numquam pariatur porro quia quos! A alias delectus
                 perferendis perspiciatis possimus?</p>
         </div>
-        <button onclick="ws.deleteBin($('.show__id').text())">Delete</button>
+        <button onclick="deleteBin($('.show__id').text())">Delete</button>
     </div>
 </div>
 

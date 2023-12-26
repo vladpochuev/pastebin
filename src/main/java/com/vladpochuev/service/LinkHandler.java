@@ -21,6 +21,7 @@ public class LinkHandler {
     private final BinDAO binDAO;
     private final SimpMessagingTemplate messagingTemplate;
     private final FirestoreMessageService messageService;
+    private final static String pattern = "yyyy-MM-dd HH:mm:ss";
 
     @Autowired
     public LinkHandler(BinDAO binDAO, SimpMessagingTemplate messagingTemplate, FirestoreMessageService messageService) {
@@ -33,7 +34,7 @@ public class LinkHandler {
         Long time = AmountOfTime.valueOf(amountOfTime).time;
         if(time == null) return null;
         ZonedDateTime expirationTime = ZonedDateTime.now().plus(time, ChronoUnit.MILLIS);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern);
         return expirationTime.format(dtf);
     }
 
@@ -41,12 +42,12 @@ public class LinkHandler {
     public void deleteExpiredBins() throws ExecutionException, InterruptedException {
         List<BinEntity> binEntities = binDAO.readExpired();
         for (BinEntity binEntity : binEntities) {
-            messageService.delete(binEntity.getMessageUUID());
-            System.out.println(binEntity.getId() + " was deleted");
+            binDAO.delete(binEntity.getId());
+            messageService.sendDelete(binEntity.getMessageUUID());
             messagingTemplate.convertAndSend("/topic/deletedBinNotifications",
-                    new ResponseEntity<>(BinNotification.getFromBin(binEntity), HttpStatus.OK));
+                    new ResponseEntity<>(BinNotification.getFromBinEntity(binEntity), HttpStatus.OK));
+            System.out.println(binEntity.getId() + " was deleted");
         }
-        binDAO.deleteExpired();
     }
 
     enum AmountOfTime {

@@ -17,6 +17,14 @@ class WS {
                 self.getDeletedBin(JSON.parse(message.body))
             })
         })
+        socket.onclose = function () {
+            console.log('connection closed')
+            self.connected = false
+            setTimeout(() => {
+                console.log('Trying to reconnect...')
+                ws.connect()
+            }, 10000)
+        }
     }
 
     createBin(bin) {
@@ -59,6 +67,8 @@ class WS {
             toastr.error('Error while deploying the bin')
         } else if (message.statusCode === 'CONFLICT') {
             toastr.error('Bin with selected coordinates already exists')
+        } else if (message.statusCode === 'NOT_ACCEPTABLE') {
+            toastr.error('Bin was created out of bounds')
         } else if (message.statusCode === 'UNAUTHORIZED') {
             const binJSON = JSON.stringify(message.headers.binToCreate[0])
             redirectTo('/login', 'binToCreate', binJSON)
@@ -88,7 +98,6 @@ class WS {
         } else if (message.statusCode === 'UNAUTHORIZED') {
             redirectTo('/register')
         }
-        closePopup('#pop-up')
     }
 }
 

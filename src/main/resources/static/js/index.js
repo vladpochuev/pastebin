@@ -26,9 +26,22 @@ const extractData = (form) => {
         x: x, y: y
     }
 
-    ws.createBin(bin)
-    closePopup(form)
-    clearForm(form)
+    if(ws.connected) {
+        ws.createBin(bin)
+        closePopup(form)
+        clearForm(form)
+    } else {
+        toastr.error('Server is not responding')
+    }
+}
+
+const deleteBin = id => {
+    if(ws.connected) {
+        ws.deleteBin(id)
+        closePopup('#pop-up')
+    } else {
+        toastr.error('Server is not responding')
+    }
 }
 
 const clearForm = form => {
@@ -143,6 +156,8 @@ const getAndShowBin = (id) => {
                 toastr.error('Bin was not found')
             } else if (data.code === 'INTERNAL_SERVER_ERROR') {
                 toastr.error('Error while getting the bin')
+            } else {
+                toastr.error('Server is not responding')
             }
         }
     })
