@@ -165,11 +165,32 @@ const getAndShowBin = (id) => {
 
 const showBin = (data) => {
     $('.show__title').text(data.title)
-    $('.show__options').text(`x:${data.x} y:${data.y}`)
-    $('.show__id').text(data.id)
     $('.show__message').text(data.message)
+    $('.info_username').text(data.username)
+    $('.info_expirationTime').text(defineExpirationTime(data.expirationTime))
+    $('.info_coords').text(`(${data.x};${data.y})`)
+    $('.info_id_text').text(data.id)
 
     openPopup('popup-show-bg')
+}
+
+const defineExpirationTime = (time) => {
+    if (time === null) return 'Infinite'
+    const dateMil = Date.parse(time) - Date.now()
+
+    const seconds = Math.floor(dateMil / 1000)
+    const minutes = Math.floor(seconds / 60)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
+
+    if (days > 0) return days + ' day' + definePlural(days)
+    else if (hours > 0) return hours + ' hour' + definePlural(hours)
+    else if (minutes > 0) return minutes + ' minute' + definePlural(minutes)
+    else if (seconds > 0) return seconds + ' second' + definePlural(seconds)
+}
+
+const definePlural = (quantity) => {
+    return quantity > 1 ? 's' : ''
 }
 
 $('#coords__input, #coords__auto').change(() => {
@@ -238,7 +259,7 @@ const fillTimeOptions = () => {
 fillTimeOptions()
 
 $('#new-bin-checkbox').change(() => {
-    let inputs = $('#new-bin-menu input, #new-bin-menu select, #new-bin-menu textarea')
+    let inputs = $('#new-bin-menu input, #new-bin-menu select, #new-bin-menu textarea, #new-bin-menu button')
     if($('#new-bin-checkbox').is(':checked')) {
         setTimeout(() => inputs.removeAttr('tabindex'), 250 )
     } else {
@@ -261,3 +282,12 @@ function redirectTo(path, ...params) {
 
     document.location.href = url.toString()
 }
+
+function adjustUpperMenuWidth() {
+    const blank = $('.upper_menu .blank')
+    const authorization = $('.upper_menu .authorization')
+
+    blank.width(authorization.width() + 50)
+}
+
+adjustUpperMenuWidth()

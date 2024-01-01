@@ -48,10 +48,10 @@ class WS {
             if(clientId !== window.clientId) return
 
             toastr.success(`<div class='toast__new-bin'><span>Bin was successfully created</span> <span class='toast__link'>
-                <img src='${linkIconUrl}' height='16px' width='16px' alt='ad'>
-                <img src='${linkIconActiveUrl}' class='link-icon-active' height='16px' width='16px' alt='ad' onclick="copyUrl('${body.id}')">
+                <img src='${linkIconUrl}' class="link_icon" height='16px' width='16px' alt='copy link'>
+                <img src='${linkIconActiveUrl}' class='link_icon_active' height='16px' width='16px' alt='copy link' onclick="copyUrl('${body.id}')">
                 </span></div>`, '', {onclick: function (e) {
-                    if(e.target.className === 'link-icon-active') return
+                    if(e.target.className === 'link_icon_active') return
                     getIntoCenter()
                     canvas.setZoom(1)
                     setZoomTitle(1)

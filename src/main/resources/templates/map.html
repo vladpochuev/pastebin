@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +11,23 @@
 </head>
 <body oncontextmenu="return false">
 
-<h1 class="current-coords"></h1>
+<div class="upper_menu">
+    <div class="blank"></div>
+    <h1 class="current_coords"></h1>
+    <div class="authorization">
+        <div sec:authorize="isAnonymous()">
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <div class="profile">
+                <img th:src="@{images/user_icon_black.png}" alt="profile_icon" height="22px">
+                <div class="profile_username" sec:authentication="name"></div>
+            </div>
+            <a href="/logout">Log out</a>
+        </div>
+    </div>
+</div>
 <canvas id="canvas"></canvas>
 <div class="ui-wrapper">
     <div class="zoom-wrapper">
@@ -27,7 +45,7 @@
             </label>
             <div id="new-bin-content">
                 <form id="drop-down">
-                    <h2 class="heading">New bin</h2>
+                    <h2 class="dropdown_heading">New bin</h2>
                     <div class="create__title">
                         <input tabindex="-1" type="text" class="title __req __max-length-100" id="create__title_input">
                         <label for="create__title_input"></label>
@@ -56,13 +74,13 @@
                     </div>
 
                     <div class="form-color">
-                        <input value="#008000" data-jscolor="" class="color">
+                        <input tabindex="-1" value="#008000" data-jscolor="" class="color">
                     </div>
 
-                    <div class="get__time">
+                    <div class="form-time-option">
                         <select tabindex="-1" class="amount_of_time"></select>
                     </div>
-                    <div class="form_button">
+                    <div class="form-button">
                         <button tabindex="-1" onclick="extractData('drop-down')">Submit</button>
                     </div>
                 </form>
@@ -75,7 +93,7 @@
     <div class="popup-create">
         <img class="close-popup" th:src="@{/images/close-icon.png}" height="25px" width="25px" alt="">
         <div class="popup__content">
-            <h2 class="heading">New bin</h2>
+            <h2 class="popup_heading">New bin</h2>
             <form id="pop-up">
                 <label for="popup__title"></label>
                 <input type="text" class="title __req __max-length-100" id="popup__title">
@@ -84,11 +102,11 @@
                 <div class="form-color">
                     <input value="#008000" data-jscolor="" class="color">
                 </div>
-                <div class="get__time">
+                <div class="form-time-option">
                     <select class="amount_of_time"></select>
                 </div>
-                <div class="form_button">
-                    <button onclick="extractData('pop-up')" class="accordion-button">Submit</button>
+                <div class="form-button">
+                    <button onclick="extractData('pop-up')">Submit</button>
                 </div>
             </form>
         </div>
@@ -101,14 +119,23 @@
         <div class="popup__content">
             <h2 class="show__title">Title</h2>
             <div class="show__info">
-                <p class="show__options">x:1 y:1</p>
-                <p class="show__id">id</p>
+                <div><img th:src="@{images/user_icon_grey.png}" alt="user icon" height="18px"><span class="info_username"></span></div>
+                <div><img th:src="@{images/time_icon.png}" alt="time icon" height="18px"><span class="info_expirationTime"></span></div>
+                <div><img th:src="@{images/compas_icon.png}" alt="compas icon" height="18px"><span class="info_coords"></span></div>
+                <div class="info_id">
+                    <img th:src="@{images/id_icon.png}" alt="id_icon" height="18px">
+                    <span class="info_id_text"></span>
+                    <span class="link_icons">
+                            <img th:src='@{images/link-icon-grey.png}' class="link_icon" height='16px' width='16px' alt='copy link'>
+                            <img th:src='@{images/link-icon-active.png}' class='link_icon_active' height='16px' width='16px' alt='copy link' onclick="copyUrl($('.info_id_text').text())">
+                    </span>
+                </div>
             </div>
             <p class="show__message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic molestias quia vitae.
                 Aspernatur at autem dolorem itaque laudantium, libero numquam pariatur porro quia quos! A alias delectus
                 perferendis perspiciatis possimus?</p>
+            <button class="show__delete_btn" onclick="deleteBin($('.info_id_text').text())">Delete</button>
         </div>
-        <button onclick="deleteBin($('.show__id').text())">Delete</button>
     </div>
 </div>
 

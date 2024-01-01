@@ -2,15 +2,18 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/authentication.css}">
     <title>Logout</title>
 </head>
 <body>
 
-<h1>Are you sure you want to log out?</h1>
+<h2>Are you sure you want to log out?</h2>
 
 <form th:method="POST" th:action="@{/logout}">
   <button type="submit">Log out</button>
 </form>
+<br>
+<p><a href="/map">Home page</a></p>
 
 </body>
 </html>

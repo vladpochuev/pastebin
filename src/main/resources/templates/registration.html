@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/authentication.css}">
     <title>Registration page</title>
 </head>
 <body>
@@ -27,6 +28,7 @@
 <br>
 <br>
 <button onclick="redirectTo('/login', 'binToCreate', new URLSearchParams(window.location.search).get('binToCreate'))">Log in</button>
+<p><a href="/map">Home page</a></p>
 
 <script th:src="@{/js/index.js}"></script>
 </body>

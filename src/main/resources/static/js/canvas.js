@@ -21,7 +21,7 @@ const initCanvas = () => {
 const setPanEvents = (canvas) => {
     canvas.on('mouse:move', e => {
         const point = getExactPoint(e)
-        const coords = document.querySelector(".current-coords")
+        const coords = document.querySelector(".current_coords")
         coords.textContent = `(${point.x};${-point.y})`
 
         if (mousePressed && e.button === 1) {
@@ -87,7 +87,6 @@ const moveInto = (newLeft, newTop, zoom) => {
 
 const zoom = (delta, offsetX, offsetY) => {
     let zoom = canvas.getZoom();
-    console.log('delta:' + delta)
     zoom *= 0.999 ** (delta * window.devicePixelRatio)
 
     if (zoom > 3) zoom = 3
@@ -133,17 +132,17 @@ const createObject = (id, title, x, y, color) => {
         originY: 'center',
     })
 
-    const trim = (string) => {
+    const validateStringLength = (string) => {
         const maxSize = clusterSizeX
         const ctx = canvas.getContext()
         if (ctx.measureText(string).width * (clusterSizeX / 56) <= maxSize) {
             return string
         } else {
-            return findMaxLength(string, maxSize, ctx)
+            return trim(string, maxSize, ctx)
         }
     }
 
-    const findMaxLength = (string, maxSize, ctx) => {
+    const trim = (string, maxSize, ctx) => {
         let len = ''
         let prevSurrogate = ''
         for (let i = 0; (ctx.measureText(len + '...' + prevSurrogate).width * (maxSize / 56) <= maxSize) && i < string.length; i++) {
@@ -162,9 +161,9 @@ const createObject = (id, title, x, y, color) => {
         return len + '...'
     }
 
-    const text = trim(title) + '\n' +
-        trim(`(${x};${y})`) + '\n' +
-        trim(id)
+    const text = validateStringLength(title) + '\n' +
+        validateStringLength(`(${x};${y})`) + '\n' +
+        validateStringLength(id)
 
     const defineTextColor = backgroundColor => {
         const rgb = parseInt(backgroundColor.substring(1), 16)
