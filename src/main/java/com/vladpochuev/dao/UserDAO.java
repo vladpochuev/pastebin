@@ -29,12 +29,6 @@ public class UserDAO implements DAO<User> {
                 new BeanPropertyRowMapper<>(User.class));
     }
 
-    public boolean existsByUsername(String username) {
-        User existingUser = jdbcTemplate.query("SELECT username FROM users", new BeanPropertyRowMapper<>(User.class))
-                .stream().findAny().orElse(new User());
-        return username.equals(existingUser.getUsername());
-    }
-
     @Override
     public void update(User user) {
         jdbcTemplate.update("UPDATE users SET username=?, password=? WHERE id=?",

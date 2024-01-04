@@ -9,9 +9,13 @@
 <body>
 
 <h2>Registration Page</h2>
-
-<div th:if="${param.error}" style="color: red">
-    <p>Invalid credentials. Please try again.</p>
+<div th:if="${param.error}">
+    <div th:switch="${param.error.stream().findAny().orElse('')}">
+        <p th:case="'duplicate'" class="error_message">User with this username already exists</p>
+        <p th:case="'usernameWrongFormat'" class="error_message">The username should be 6 to 30 characters long, must contain at least one uppercase letter</p>
+        <p th:case="'passwordWrongFormat'" class="error_message">The password should be 8 to 30 characters long, must contain at least one uppercase letter</p>
+        <p th:case="*" class="error_message">Invalid credentials. Please try again</p>
+    </div>
 </div>
 
 <form th:action="@{/signup}" th:method="POST">

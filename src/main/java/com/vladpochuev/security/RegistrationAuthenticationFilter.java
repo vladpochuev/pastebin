@@ -3,10 +3,10 @@ package com.vladpochuev.security;
 import com.vladpochuev.dao.UserDAO;
 import com.vladpochuev.model.User;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.lang.Nullable;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +21,14 @@ import java.util.UUID;
 
 public class RegistrationAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/signup", "POST");
+    private static final int MIN_USERNAME_LENGTH = 6;
+    private static final int MIN_PASSWORD_LENGTH = 8;
+    private static final int MAX_USERNAME_LENGTH = 30;
+    private static final int MAX_PASSWORD_LENGTH = 30;
+    private static final String USERNAME_REGEX = String.format("^(?=[a-zA-Z0-9._]{%d,%d}$)(?!.*[_.]{2})[^_.].*[^_.]$",
+            MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
+    private static final String PASSWORD_REGEX = String.format("^(?=.*?[a-z]).{%d,%d}$",
+            MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH);
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
     private final TokenCookieJweStringSerializer tokenCookieJweStringSerializer;
@@ -42,24 +50,34 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
         this.tokenCookieJweStringSerializer = tokenCookieJweStringSerializer;
     }
 
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = this.obtainUsername(request);
-        username = username != null ? username.trim() : "";
         String password = this.obtainPassword(request);
-        password = password != null ? password : "";
+        validateData(username, password);
 
-        if (!userDAO.existsByUsername(username)) {
+        try {
             User user = new User();
             user.setId(UUID.randomUUID().toString());
             user.setUsername(username);
             user.setPassword(passwordEncoder.encode(password));
 
             userDAO.create(user);
+        } catch (DuplicateKeyException e) {
+            throw new UserAlreadyExistsException("User already exists");
         }
 
         UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
         this.setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);
+    }
+
+    private void validateData(String username, String password) {
+        if (!username.matches(USERNAME_REGEX)) {
+            throw new UsernameWrongFormatException("Wrong username format");
+        }
+        if (!password.matches(PASSWORD_REGEX)) {
+            throw new PasswordWrongFormatException("Wrong password format");
+        }
     }
 
     @Override
@@ -75,23 +93,37 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        response.sendRedirect("/signup?error");
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException {
+        String errorMessage = null;
+        if (failed instanceof UserAlreadyExistsException) {
+            errorMessage = "duplicate";
+        } else if (failed instanceof UsernameWrongFormatException) {
+            errorMessage = "usernameWrongFormat";
+        } else if (failed instanceof PasswordWrongFormatException) {
+            errorMessage = "passwordWrongFormat";
+        }
+
+        response.sendRedirect("/signup?error" + (errorMessage == null ? "" : "=" + errorMessage));
     }
 
-    @Nullable
+    @NotNull
     protected String obtainPassword(HttpServletRequest request) {
-        return request.getParameter(this.passwordParameter);
+        String password = request.getParameter(this.passwordParameter);
+        return password != null ? password.trim() : "";
     }
 
-    @Nullable
+    @NotNull
     protected String obtainUsername(HttpServletRequest request) {
-        return request.getParameter(this.usernameParameter);
+        String username = request.getParameter(this.usernameParameter);
+        return username != null ? username.trim() : "";
     }
 
     protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
     }
+
 
     public void setUsernameParameter(String usernameParameter) {
         Assert.hasText(usernameParameter, "Username parameter must not be empty or null");
