@@ -17,12 +17,12 @@ public class TokenCookieAuthenticationConverter implements AuthenticationConvert
 
     @Override
     public Authentication convert(HttpServletRequest request) {
-        if(request.getCookies() != null) {
+        if (request.getCookies() != null) {
             return Stream.of(request.getCookies())
                     .filter(cookie -> cookie.getName().equals("__Host-auth-token"))
                     .findFirst()
                     .map(cookie -> {
-                        Token token = tokenCookieStringDeserializer.apply(cookie.getValue());
+                        Token token = this.tokenCookieStringDeserializer.apply(cookie.getValue());
                         return new PreAuthenticatedAuthenticationToken(token, cookie.getValue());
                     })
                     .orElse(null);

@@ -4,7 +4,7 @@ const createCanvas = (id) => {
         height: window.innerHeight,
         selection: false,
         hoverCursor: 'grab',
-        moveCursor:'grabbing',
+        moveCursor: 'grabbing',
         backgroundColor: '#FFE4DE',
         fireRightClick: true,
         stopContextMenu: true,
@@ -31,10 +31,10 @@ const setPanEvents = (canvas) => {
     })
 
     canvas.on('mouse:down', e => {
-        if(e.button === 1) {
+        if (e.button === 1) {
             mousePressed = true
             canvas.setCursor('grab')
-        } else if(e.button === 3 && e.target == null) {
+        } else if (e.button === 3 && e.target == null) {
             mousePressed = false
             let point = getExactPoint(e)
             window.lastClickX = point.x
@@ -44,7 +44,7 @@ const setPanEvents = (canvas) => {
     })
 
     canvas.on('mouse:up', e => {
-        if(e.button === 1) {
+        if (e.button === 1) {
             mousePressed = false
             canvas.setCursor('default')
         }
@@ -93,7 +93,7 @@ const zoom = (delta, offsetX, offsetY) => {
     if (zoom < 0.15) zoom = 0.15
 
     setZoomTitle(zoom)
-    canvas.zoomToPoint({ x: offsetX, y: offsetY }, zoom)
+    canvas.zoomToPoint({x: offsetX, y: offsetY}, zoom)
 
     const newLeft = -canvas.viewportTransform[4] / zoom;
     const newTop = -canvas.viewportTransform[5] / zoom;
@@ -116,17 +116,17 @@ const getPointer = (e) => {
 
 const getExactPoint = (e) => {
     const pointer = getPointer(e)
-    const x = Math.floor(pointer.x/clusterSizeX)
-    const y = Math.floor(pointer.y/clusterSizeY)
-    return new fabric.Point(x,y)
+    const x = Math.floor(pointer.x / clusterSizeX)
+    const y = Math.floor(pointer.y / clusterSizeY)
+    return new fabric.Point(x, y)
 }
 
 const createObject = (id, title, x, y, color) => {
     const rect = new fabric.Rect({
         width: clusterSizeX,
         height: clusterSizeY,
-        left: clusterSizeX/2 + (x * clusterSizeX),
-        top: clusterSizeY/2 + -(y * clusterSizeY),
+        left: clusterSizeX / 2 + (x * clusterSizeX),
+        top: clusterSizeY / 2 + -(y * clusterSizeY),
         fill: color,
         originX: 'center',
         originY: 'center',
@@ -145,7 +145,9 @@ const createObject = (id, title, x, y, color) => {
     const trim = (string, maxSize, ctx) => {
         let len = ''
         let prevSurrogate = ''
-        for (let i = 0; (ctx.measureText(len + '...' + prevSurrogate).width * (maxSize / 56) <= maxSize) && i < string.length; i++) {
+        for (let i = 0; (ctx.measureText(len + '...' + prevSurrogate).width * (maxSize / 56) <= maxSize)
+        && i < string.length; i++) {
+
             let char = string.charAt(i)
             if (char.match(/\p{Surrogate}/gu)) {
                 if (prevSurrogate === '') {
@@ -177,8 +179,8 @@ const createObject = (id, title, x, y, color) => {
 
     let textBox = new fabric.Textbox(text, {
         originX: 'center', originY: 'center',
-        left: clusterSizeX/2 + (x * clusterSizeX),
-        top: clusterSizeY/2 + -(y * clusterSizeY),
+        left: clusterSizeX / 2 + (x * clusterSizeX),
+        top: clusterSizeY / 2 + -(y * clusterSizeY),
         height: Math.floor(clusterSizeX),
         width: Math.floor(clusterSizeY),
         textAlign: 'center',
@@ -186,20 +188,22 @@ const createObject = (id, title, x, y, color) => {
         fontSize: clusterSizeY / 7
     })
 
-    let group = new fabric.Group([rect, textBox], {hasControls: false,
+    let group = new fabric.Group([rect, textBox], {
+        hasControls: false,
         hasBorders: false,
         lockMovementX: true,
         name: id,
-        lockMovementY: true})
+        lockMovementY: true
+    })
 
     group.on('mousemove', () => {
-        if(!mousePressed) {
+        if (!mousePressed) {
             canvas.setCursor('default')
         }
     })
 
     group.on('mousedown', e => {
-        if(e.button === 3) {
+        if (e.button === 3) {
             getAndShowBin(e.target.name)
         }
     })

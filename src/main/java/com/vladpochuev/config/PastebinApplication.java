@@ -52,9 +52,9 @@ public class PastebinApplication {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl(dbProperties.getUrl());
-        dataSource.setUsername(dbProperties.getUsername());
-        dataSource.setPassword(dbProperties.getPassword());
+        dataSource.setUrl(this.dbProperties.getUrl());
+        dataSource.setUsername(this.dbProperties.getUsername());
+        dataSource.setPassword(this.dbProperties.getPassword());
 
         return dataSource;
     }
@@ -65,7 +65,7 @@ public class PastebinApplication {
     }
 
     @Bean
-    public TokenCookieJweStringSerializer tokenCookieJweStringSerializer (
+    public TokenCookieJweStringSerializer tokenCookieJweStringSerializer(
             @Value("${jwt.cookie-token-key}") String cookieTokenKey) throws ParseException, KeyLengthException {
         return new TokenCookieJweStringSerializer(new DirectEncrypter(
                 OctetSequenceKey.parse(cookieTokenKey)
@@ -90,7 +90,9 @@ public class PastebinApplication {
             TokenCookieAuthenticationConfigurer tokenCookieAuthenticationConfigurer,
             TokenCookieJweStringSerializer tokenCookieJweStringSerializer,
             RegistrationAuthenticationFilter registrationAuthenticationFilter) throws Exception {
-        TokenCookieSessionAuthenticationStrategy tokenCookieSessionAuthenticationStrategy = new TokenCookieSessionAuthenticationStrategy();
+
+        TokenCookieSessionAuthenticationStrategy tokenCookieSessionAuthenticationStrategy =
+                new TokenCookieSessionAuthenticationStrategy();
         tokenCookieSessionAuthenticationStrategy.setTokenStringSerializer(tokenCookieJweStringSerializer);
 
         http
@@ -118,15 +120,15 @@ public class PastebinApplication {
                                         "/signup").anonymous()
                                 .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionAuthenticationStrategy(tokenCookieSessionAuthenticationStrategy))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(new CookieCsrfTokenRepository())
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                        .sessionAuthenticationStrategy((authentication, request, response) -> {}));
+                        .sessionAuthenticationStrategy((authentication, request, response) -> {
+                        }));
 
         http.apply(tokenCookieAuthenticationConfigurer);
-
         return http.build();
     }
 

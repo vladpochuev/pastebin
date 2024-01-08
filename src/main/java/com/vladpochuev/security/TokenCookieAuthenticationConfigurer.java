@@ -19,10 +19,12 @@ public class TokenCookieAuthenticationConfigurer
         extends AbstractHttpConfigurer<TokenCookieAuthenticationConfigurer, HttpSecurity> {
     private Function<String, Token> tokenCookieStringDeserializer;
     private JdbcTemplate jdbcTemplate;
+
     @Override
     public void init(HttpSecurity builder) throws Exception {
-        builder.logout(logout -> logout.addLogoutHandler(
-                new CookieClearingLogoutHandler("__Host-auth-token"))
+        builder.logout(logout -> logout
+                .addLogoutHandler(
+                        new CookieClearingLogoutHandler("__Host-auth-token"))
                 .addLogoutHandler((request, response, authentication) -> {
                     if (authentication != null &&
                             authentication.getPrincipal() instanceof TokenUser user) {
@@ -37,12 +39,7 @@ public class TokenCookieAuthenticationConfigurer
 
     @Override
     public void configure(HttpSecurity builder) {
-        AuthenticationFilter cookieAuthenticationFilter = new AuthenticationFilter(
-                builder.getSharedObject(AuthenticationManager.class),
-                new TokenCookieAuthenticationConverter(this.tokenCookieStringDeserializer));
-        cookieAuthenticationFilter.setSuccessHandler((request, response, authentication) -> {});
-        cookieAuthenticationFilter.setFailureHandler(
-                new AuthenticationEntryPointFailureHandler(new Http403ForbiddenEntryPoint()));
+        AuthenticationFilter cookieAuthenticationFilter = createAuthenticationFilter(builder);
 
         PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
         authenticationProvider.setPreAuthenticatedUserDetailsService(new TokenAuthenticationUserDetailsService(this.jdbcTemplate));
@@ -60,6 +57,19 @@ public class TokenCookieAuthenticationConfigurer
     public TokenCookieAuthenticationConfigurer setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         return this;
+    }
+
+    private AuthenticationFilter createAuthenticationFilter(HttpSecurity builder) {
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(
+                builder.getSharedObject(AuthenticationManager.class),
+                new TokenCookieAuthenticationConverter(this.tokenCookieStringDeserializer));
+
+        authenticationFilter.setSuccessHandler((request, response, authentication) -> {
+        });
+        authenticationFilter.setFailureHandler(
+                new AuthenticationEntryPointFailureHandler(new Http403ForbiddenEntryPoint()));
+
+        return authenticationFilter;
     }
 }
 

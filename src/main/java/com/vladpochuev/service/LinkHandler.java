@@ -14,7 +14,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class LinkHandler {
@@ -32,21 +31,20 @@ public class LinkHandler {
 
     public String getExpirationTime(String amountOfTime) {
         Long time = AmountOfTime.valueOf(amountOfTime).time;
-        if(time == null) return null;
+        if (time == null) return null;
         ZonedDateTime expirationTime = ZonedDateTime.now().plus(time, ChronoUnit.MILLIS);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern);
         return expirationTime.format(dtf);
     }
 
-    @Scheduled(fixedDelay = 30000)
-    public void deleteExpiredBins() throws ExecutionException, InterruptedException {
+    @Scheduled(fixedDelay = 5000)
+    public void deleteExpiredBins() {
         List<BinEntity> binEntities = binDAO.readExpired();
         for (BinEntity binEntity : binEntities) {
             binDAO.delete(binEntity.getId());
             messageService.sendDelete(binEntity.getMessageUUID());
             messagingTemplate.convertAndSend("/topic/deletedBinNotifications",
                     new ResponseEntity<>(BinNotification.getFromBinEntity(binEntity), HttpStatus.OK));
-            System.out.println(binEntity.getId() + " was deleted");
         }
     }
 
@@ -61,6 +59,7 @@ public class LinkHandler {
         SIX_MONTHS(ONE_MONTH.time * 6);
 
         private final Long time;
+
         AmountOfTime(Long time) {
             this.time = time;
         }

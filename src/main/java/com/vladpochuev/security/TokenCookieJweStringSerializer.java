@@ -10,14 +10,10 @@ import java.util.Date;
 import java.util.function.Function;
 
 public class TokenCookieJweStringSerializer implements Function<Token, String> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenCookieJweStringSerializer.class);
-
     private final JWEEncrypter jweEncrypter;
-
     private JWEAlgorithm jweAlgorithm = JWEAlgorithm.DIR;
-
     private EncryptionMethod encryptionMethod = EncryptionMethod.A128GCM;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenCookieJweStringSerializer.class);
 
     public TokenCookieJweStringSerializer(JWEEncrypter jweEncrypter) {
         this.jweEncrypter = jweEncrypter;
@@ -31,25 +27,23 @@ public class TokenCookieJweStringSerializer implements Function<Token, String> {
 
     @Override
     public String apply(Token token) {
-        var jwsHeader = new JWEHeader.Builder(this.jweAlgorithm, this.encryptionMethod)
+        JWEHeader jweHeader = new JWEHeader.Builder(this.jweAlgorithm, this.encryptionMethod)
                 .keyID(token.id().toString())
                 .build();
-        var claimsSet = new JWTClaimsSet.Builder()
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .jwtID(token.id().toString())
                 .subject(token.subject())
                 .issueTime(Date.from(token.createdAt()))
                 .expirationTime(Date.from(token.expiresAt()))
                 .claim("authorities", token.authorities())
                 .build();
-        var encryptedJWT = new EncryptedJWT(jwsHeader, claimsSet);
+        EncryptedJWT encryptedJWT = new EncryptedJWT(jweHeader, claimsSet);
         try {
             encryptedJWT.encrypt(this.jweEncrypter);
-
             return encryptedJWT.serialize();
         } catch (JOSEException exception) {
             LOGGER.error(exception.getMessage(), exception);
+            return null;
         }
-
-        return null;
     }
 }

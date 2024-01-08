@@ -15,6 +15,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         registry.addEndpoint("/api/stomp-endpoint")
                 .withSockJS();
     }
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/topic");
@@ -24,7 +25,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
         registration.setMessageSizeLimit(250000);
-        registration.setSendTimeLimit(30 * 10000);
+        registration.setSendTimeLimit(300000);
         registration.setSendBufferSizeLimit(3 * 512 * 1024);
     }
 }

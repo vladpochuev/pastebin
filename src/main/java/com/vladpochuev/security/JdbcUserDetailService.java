@@ -18,12 +18,12 @@ public class JdbcUserDetailService extends MappingSqlQuery<UserDetails> implemen
 
     public JdbcUserDetailService(DataSource ds) {
         super(ds, """
-            SELECT
-            users.username,
-            users.password
-            FROM users
-            WHERE users.username = :username
-        """);
+                    SELECT
+                    users.username,
+                    users.password
+                    FROM users
+                    WHERE users.username = :username
+                """);
         this.declareParameter(new SqlParameter("username", Types.VARCHAR));
         this.compile();
     }

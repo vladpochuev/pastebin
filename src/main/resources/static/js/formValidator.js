@@ -6,20 +6,20 @@ const validateForm = (form) => {
         const input = formReq[i];
         formRemoveError(input)
 
-        if(input.value.trim().length === 0) {
+        if (input.value.trim().length === 0) {
             formAddError(input)
             errorCounter++
         }
 
         input.classList.forEach(a => {
-            if(a.includes('__max-length') && !isLengthValid(input)) {
+            if (a.includes('__max-length') && !isLengthValid(input)) {
                 formAddError(input)
                 errorCounter++
             }
         })
 
         input.classList.forEach(a => {
-            if(a.includes('__max-value') && !isValueValid(input)) {
+            if (a.includes('__max-value') && !isValueValid(input)) {
                 formAddError(input)
                 errorCounter++
             }

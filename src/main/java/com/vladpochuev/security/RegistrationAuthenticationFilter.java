@@ -21,6 +21,11 @@ import java.util.UUID;
 
 public class RegistrationAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/signup", "POST");
+    private final UserDAO userDAO;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenCookieJweStringSerializer tokenCookieJweStringSerializer;
+    private String usernameParameter = "username";
+    private String passwordParameter = "password";
     private static final int MIN_USERNAME_LENGTH = 6;
     private static final int MIN_PASSWORD_LENGTH = 8;
     private static final int MAX_USERNAME_LENGTH = 30;
@@ -29,11 +34,6 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
             MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
     private static final String PASSWORD_REGEX = String.format("^(?=.*?[a-z]).{%d,%d}$",
             MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH);
-    private final UserDAO userDAO;
-    private final PasswordEncoder passwordEncoder;
-    private final TokenCookieJweStringSerializer tokenCookieJweStringSerializer;
-    private String usernameParameter = "username";
-    private String passwordParameter = "password";
 
     public RegistrationAuthenticationFilter(UserDAO userDAO, PasswordEncoder passwordEncoder, TokenCookieJweStringSerializer tokenCookieJweStringSerializer) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
@@ -53,18 +53,9 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = this.obtainUsername(request);
         String password = this.obtainPassword(request);
+
         validateData(username, password);
-
-        try {
-            User user = new User();
-            user.setId(UUID.randomUUID().toString());
-            user.setUsername(username);
-            user.setPassword(passwordEncoder.encode(password));
-
-            userDAO.create(user);
-        } catch (DuplicateKeyException e) {
-            throw new UserAlreadyExistsException("User already exists");
-        }
+        createUser(username, password);
 
         UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
         this.setDetails(request, authRequest);
@@ -80,11 +71,24 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
         }
     }
 
+    private void createUser(String username, String password) {
+        try {
+            User user = new User();
+            user.setId(UUID.randomUUID().toString());
+            user.setUsername(username);
+            user.setPassword(this.passwordEncoder.encode(password));
+
+            this.userDAO.create(user);
+        } catch (DuplicateKeyException e) {
+            throw new UserAlreadyExistsException("User already exists");
+        }
+    }
+
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException {
         TokenCookieSessionAuthenticationStrategy tokenCookieSessionAuthenticationStrategy = new TokenCookieSessionAuthenticationStrategy();
-        tokenCookieSessionAuthenticationStrategy.setTokenStringSerializer(tokenCookieJweStringSerializer);
+        tokenCookieSessionAuthenticationStrategy.setTokenStringSerializer(this.tokenCookieJweStringSerializer);
         tokenCookieSessionAuthenticationStrategy.onAuthentication(authResult, request, response);
 
         String bin = request.getParameter("binToCreate");

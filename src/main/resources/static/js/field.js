@@ -13,7 +13,7 @@ class Field {
         return this.#field
     }
 
-    fillArray () {
+    fillArray() {
         this.#field = []
         for (let i = 0; i <= this.#amountOfCellsX * 2 + 1; i++) {
             this.#field[i] = []

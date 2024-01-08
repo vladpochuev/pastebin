@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/error.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/error_authentication.css}">
     <title>Error</title>
 </head>
 <body>
 <div class="container">
+    <!--/*@thymesVar id="status" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="error" type="java.lang.String"*/-->
     <h1 th:text="${status + ' - ' + error}"></h1>
     <p><a href="/map">Home page</a></p>
 </div>

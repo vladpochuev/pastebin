@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/map.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/ui_menu.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/create_show_forms.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/lib/toastr.min.css}">
     <title>Bins</title>
 </head>
@@ -60,9 +62,11 @@
                             <div class="coords__radio">
                                 <input tabindex="-1" type="radio" name="coords__radio" checked id="coords__input">
                                 <label for="coords__x">x:</label>
-                                <input tabindex="-1" type="text" class="__req __min-value_-100 __max-value_100" id="coords__x">
+                                <input tabindex="-1" type="text" class="__req __min-value_-100 __max-value_100"
+                                       id="coords__x">
                                 <label for="coords__y">y:</label>
-                                <input tabindex="-1" type="text" class="__req __min-value_-100 __max-value_100" id="coords__y">
+                                <input tabindex="-1" type="text" class="__req __min-value_-100 __max-value_100"
+                                       id="coords__y">
                             </div>
                         </div>
                         <div class="coords__radio">
@@ -119,21 +123,24 @@
         <div class="popup__content">
             <h2 class="show__title">Title</h2>
             <div class="show__info">
-                <div><img th:src="@{images/user_icon_grey.png}" alt="user icon" height="18px"><span class="info_username"></span></div>
-                <div><img th:src="@{images/time_icon.png}" alt="time icon" height="18px"><span class="info_expirationTime"></span></div>
-                <div><img th:src="@{images/compas_icon.png}" alt="compas icon" height="18px"><span class="info_coords"></span></div>
+                <div><img th:src="@{images/user_icon_grey.png}" alt="user icon" height="18px"><span
+                        class="info_username"></span></div>
+                <div><img th:src="@{images/time_icon.png}" alt="time icon" height="18px"><span
+                        class="info_expirationTime"></span></div>
+                <div><img th:src="@{images/compas_icon.png}" alt="compas icon" height="18px"><span
+                        class="info_coords"></span></div>
                 <div class="info_id">
                     <img th:src="@{images/id_icon.png}" alt="id_icon" height="18px">
                     <span class="info_id_text"></span>
                     <span class="link_icons">
-                            <img th:src='@{images/link-icon-grey.png}' class="link_icon" height='16px' width='16px' alt='copy link'>
-                            <img th:src='@{images/link-icon-active.png}' class='link_icon_active' height='16px' width='16px' alt='copy link' onclick="copyUrl($('.info_id_text').text())">
+                            <img th:src='@{images/link-icon-grey.png}' class="link_icon" height='16px' width='16px'
+                                 alt='copy link'>
+                            <img th:src='@{images/link-icon-active.png}' class='link_icon_active' height='16px'
+                                 width='16px' alt='copy link' onclick="copyUrl($('.info_id_text').text())">
                     </span>
                 </div>
             </div>
-            <p class="show__message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic molestias quia vitae.
-                Aspernatur at autem dolorem itaque laudantium, libero numquam pariatur porro quia quos! A alias delectus
-                perferendis perspiciatis possimus?</p>
+            <p class="show__message"></p>
             <button class="show__delete_btn" onclick="deleteBin($('.info_id_text').text())">Delete</button>
         </div>
     </div>
@@ -153,6 +160,7 @@
 <script th:src="@{/js/ws.js}"></script>
 <script th:src="@{/js/formValidator.js}"></script>
 <script th:src="@{/js/field.js}"></script>
+<script th:src="@{/js/ui.js}"></script>
 
 <script th:inline="javascript">
     let bins = [[${bins}]]

@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.Base64;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api")
@@ -44,7 +43,7 @@ public class BinRestController {
     @GetMapping("/bin")
     public ResponseEntity<BinMessage> getBin(@RequestParam("id") String id) {
         try {
-            BinEntity binEntity = binDAO.readById(id);
+            BinEntity binEntity = this.binDAO.readById(id);
             return defineMessage(binEntity);
         } catch (DataAccessResourceFailureException | QueryTimeoutException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -52,8 +51,8 @@ public class BinRestController {
     }
 
     private ResponseEntity<BinMessage> defineMessage(BinEntity selectedBinEntity) {
-        if(selectedBinEntity != null) {
-            return new ResponseEntity<>(BinMessage.getFromBinEntity(selectedBinEntity, messageService), HttpStatus.OK);
+        if (selectedBinEntity != null) {
+            return new ResponseEntity<>(BinMessage.getFromBinEntity(selectedBinEntity, this.messageService), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -61,21 +60,20 @@ public class BinRestController {
 
     @MessageMapping({"/createBin"})
     @SendTo("/topic/createdBinNotifications")
-    public ResponseEntity<BinNotification> createBinWS(Bin bin, Principal principal, StompHeaderAccessor accessor)
-            throws ExecutionException, InterruptedException {
+    public ResponseEntity<BinNotification> createBinWS(Bin bin, Principal principal, StompHeaderAccessor accessor) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("clientId", accessor.getFirstNativeHeader("clientId"));
 
-        if(principal == null) {
+        if (principal == null) {
             putBinToCreate(bin, headers);
             return new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
         }
 
         BinEntity binEntity = convertBinToEntity(bin, principal);
-        messageService.sendCreate(new FirestoreMessageEntity(binEntity.getMessageUUID(), bin.getMessage()));
+        this.messageService.sendCreate(new FirestoreMessageEntity(binEntity.getMessageUUID(), bin.getMessage()));
 
         HttpStatus receivedStatus = createBin(binEntity);
-        if(receivedStatus == HttpStatus.OK) {
+        if (receivedStatus == HttpStatus.OK) {
             return new ResponseEntity<>(BinNotification.getFromBinEntity(binEntity), headers, receivedStatus);
         } else {
             return new ResponseEntity<>(headers, receivedStatus);
@@ -95,7 +93,7 @@ public class BinRestController {
     private BinEntity convertBinToEntity(Bin bin, Principal principal) {
         HashGenerator hashGenerator = new HashGenerator(bin.getTitle(), System.nanoTime(), Math.floor(Math.random() * 1024));
         String id = hashGenerator.getHash("SHA-1", 10);
-        String expirationTime = linkHandler.getExpirationTime(bin.getAmountOfTime());
+        String expirationTime = this.linkHandler.getExpirationTime(bin.getAmountOfTime());
         String username = principal.getName();
         String messageUUID = UUID.randomUUID().toString();
         return new BinEntity(id, bin.getTitle(), messageUUID, bin.getX(), bin.getY(), bin.getColor(),
@@ -107,7 +105,7 @@ public class BinRestController {
             if (binEntity.getX() == null && binEntity.getY() == null) {
                 createBinWithBFS(binEntity);
             } else {
-                binDAO.create(binEntity);
+                this.binDAO.create(binEntity);
             }
         } catch (DataAccessResourceFailureException | QueryTimeoutException e) {
             return HttpStatus.INTERNAL_SERVER_ERROR;
@@ -121,48 +119,48 @@ public class BinRestController {
 
     private void createBinWithBFS(BinEntity binEntity) {
         while (true) {
-            BFS<BinEntity> bfs = new BFS<>(binDAO);
+            BFS<BinEntity> bfs = new BFS<>(this.binDAO);
             bfs.fillField();
             try {
                 Point coords = bfs.findNearest();
                 binEntity.setX(coords.getX());
                 binEntity.setY(coords.getY());
-                binDAO.create(binEntity);
+                this.binDAO.create(binEntity);
                 break;
-            } catch (DuplicateKeyException ignored) {}
+            } catch (DuplicateKeyException ignored) {
+            }
         }
     }
 
     @MessageMapping("/deleteBin")
     @SendTo("/topic/deletedBinNotifications")
-    public ResponseEntity<BinNotification> deleteBinWS(String id, Principal principal, StompHeaderAccessor accessor)
-            throws ExecutionException, InterruptedException {
+    public ResponseEntity<BinNotification> deleteBinWS(String id, Principal principal, StompHeaderAccessor accessor) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("clientId", accessor.getFirstNativeHeader("clientId"));
 
-        if(principal == null) {
+        if (principal == null) {
             headers.add("binToDelete", id);
             return new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
         }
 
-        BinEntity binEntity = binDAO.readById(id);
+        BinEntity binEntity = this.binDAO.readById(id);
         HttpStatus receivedStatus = deleteBin(binEntity, principal);
-        if(receivedStatus == HttpStatus.OK) {
+        if (receivedStatus == HttpStatus.OK) {
             return new ResponseEntity<>(BinNotification.getFromBinEntity(binEntity), headers, receivedStatus);
         } else {
             return new ResponseEntity<>(headers, receivedStatus);
         }
     }
 
-    private HttpStatus deleteBin(BinEntity binEntity, Principal principal) throws ExecutionException, InterruptedException {
+    private HttpStatus deleteBin(BinEntity binEntity, Principal principal) {
         try {
-            if(binEntity == null) {
+            if (binEntity == null) {
                 return HttpStatus.NOT_FOUND;
-            } else if(!binEntity.getUsername().equals(principal.getName())) {
+            } else if (!binEntity.getUsername().equals(principal.getName())) {
                 return HttpStatus.FORBIDDEN;
             } else {
-                binDAO.delete(binEntity.getId());
-                messageService.sendDelete(binEntity.getMessageUUID());
+                this.binDAO.delete(binEntity.getId());
+                this.messageService.sendDelete(binEntity.getMessageUUID());
                 return HttpStatus.OK;
             }
         } catch (DataAccessResourceFailureException | QueryTimeoutException e) {

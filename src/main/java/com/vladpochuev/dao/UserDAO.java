@@ -17,26 +17,26 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public void create(User user) {
-        jdbcTemplate.update("""
-            INSERT INTO users (id, username, password)
-            VALUES (?, ?, ?)
-        """, user.getId(), user.getUsername(), user.getPassword());
+        this.jdbcTemplate.update("""
+                    INSERT INTO users (id, username, password)
+                    VALUES (?, ?, ?)
+                """, user.getId(), user.getUsername(), user.getPassword());
     }
 
     @Override
     public List<User> read() {
-        return jdbcTemplate.query("SELECT * FROM users",
+        return this.jdbcTemplate.query("SELECT * FROM users",
                 new BeanPropertyRowMapper<>(User.class));
     }
 
     @Override
     public void update(User user) {
-        jdbcTemplate.update("UPDATE users SET username=?, password=? WHERE id=?",
+        this.jdbcTemplate.update("UPDATE users SET username=?, password=? WHERE id=?",
                 user.getUsername(), user.getPassword(), user.getId());
     }
 
     @Override
     public void delete(String id) {
-        jdbcTemplate.update("DELETE FROM bin WHERE id=?", id);
+        this.jdbcTemplate.update("DELETE FROM bin WHERE id=?", id);
     }
 }

@@ -20,7 +20,7 @@ public class BinMessage {
     private String username;
 
     public static BinMessage getFromBinEntity(BinEntity bin, FirestoreMessageService messageService) {
-        if(bin == null) return null;
+        if (bin == null) return null;
         try {
             FirestoreMessageEntity entity = messageService.read(bin.getMessageUUID());
             return new BinMessage(bin.getId(), bin.getTitle(), entity.getMessage(), bin.getX(), bin.getY(),

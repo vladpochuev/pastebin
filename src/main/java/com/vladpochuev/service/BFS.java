@@ -11,7 +11,6 @@ public class BFS<Obj extends Placeable> {
     private boolean[][] field;
     private final Deque<Point> deque = new ArrayDeque<>();
     private final DAO<Obj> dao;
-
     private final int amountOfCellsX = 100;
     private final int amountOfCellsY = 100;
 

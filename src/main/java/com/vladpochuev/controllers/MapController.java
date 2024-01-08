@@ -34,7 +34,7 @@ public class MapController {
 
     @GetMapping("/map")
     public String getMenu(Model model, @RequestParam(value = "id", required = false) String id) {
-        BinEntity selectedBinEntity = binDAO.readById(id);
+        BinEntity selectedBinEntity = this.binDAO.readById(id);
 
         ResponseEntity<BinMessage> urlBin = id == null ? null : defineMessage(selectedBinEntity);
         model.addAttribute("urlBin", urlBin);
@@ -44,7 +44,7 @@ public class MapController {
 
     private String getBinEntities() {
         try {
-            List<BinEntity> binEntities = binDAO.read();
+            List<BinEntity> binEntities = this.binDAO.read();
             ObjectMapper mapper = new ObjectMapper();
             byte[] bytes = mapper.writeValueAsBytes(binEntities);
             return Base64.getEncoder().encodeToString(bytes);
@@ -54,8 +54,8 @@ public class MapController {
     }
 
     private ResponseEntity<BinMessage> defineMessage(BinEntity selectedBinEntity) {
-        if(selectedBinEntity != null) {
-            return new ResponseEntity<>(BinMessage.getFromBinEntity(selectedBinEntity, messageService), HttpStatus.OK);
+        if (selectedBinEntity != null) {
+            return new ResponseEntity<>(BinMessage.getFromBinEntity(selectedBinEntity, this.messageService), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

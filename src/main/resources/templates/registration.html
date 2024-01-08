@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/authentication.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/error_authentication.css}">
     <title>Registration page</title>
 </head>
 <body>
@@ -12,8 +12,10 @@
 <div th:if="${param.error}">
     <div th:switch="${param.error.stream().findAny().orElse('')}">
         <p th:case="'duplicate'" class="error_message">User with this username already exists</p>
-        <p th:case="'usernameWrongFormat'" class="error_message">The username should be 6 to 30 characters long, must contain at least one uppercase letter</p>
-        <p th:case="'passwordWrongFormat'" class="error_message">The password should be 8 to 30 characters long, must contain at least one uppercase letter</p>
+        <p th:case="'usernameWrongFormat'" class="error_message">The username should be 6 to 30 characters long, must
+            contain at least one uppercase letter</p>
+        <p th:case="'passwordWrongFormat'" class="error_message">The password should be 8 to 30 characters long, must
+            contain at least one uppercase letter</p>
         <p th:case="*" class="error_message">Invalid credentials. Please try again</p>
     </div>
 </div>
@@ -28,11 +30,14 @@
     <br>
     <button type="submit">Sign up</button>
 </form>
-
 <br>
 <br>
-<button onclick="redirectTo('/login', 'binToCreate', new URLSearchParams(window.location.search).get('binToCreate'))">Log in</button>
-<p><a href="/map">Home page</a></p>
+<button onclick="redirectTo('/login', 'binToCreate', new URLSearchParams(window.location.search).get('binToCreate'))">
+    Log in
+</button>
+<p>
+    <a href="/map">Home page</a>
+</p>
 
 <script th:src="@{/js/index.js}"></script>
 </body>
