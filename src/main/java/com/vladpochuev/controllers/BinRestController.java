@@ -1,7 +1,5 @@
 package com.vladpochuev.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladpochuev.dao.BinDAO;
 import com.vladpochuev.model.*;
 import com.vladpochuev.service.BFS;
@@ -12,32 +10,29 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.QueryTimeoutException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Base64;
 import java.util.UUID;
 
 @RestController
+@SessionAttributes("userData")
 @RequestMapping("/api")
 public class BinRestController {
     private final BinDAO binDAO;
     private final LinkHandler linkHandler;
-    private final FirestoreMessageService messageService;
+    private final FirestoreMessageService firestoreMessageService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public BinRestController(BinDAO binDAO, LinkHandler linkHandler, FirestoreMessageService messageService) {
+    public BinRestController(BinDAO binDAO, LinkHandler linkHandler, FirestoreMessageService firestoreMessageService,
+                             SimpMessagingTemplate messagingTemplate) {
         this.binDAO = binDAO;
         this.linkHandler = linkHandler;
-        this.messageService = messageService;
+        this.firestoreMessageService = firestoreMessageService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/bin")
@@ -52,42 +47,42 @@ public class BinRestController {
 
     private ResponseEntity<BinMessage> defineMessage(BinEntity selectedBinEntity) {
         if (selectedBinEntity != null) {
-            return new ResponseEntity<>(BinMessage.getFromBinEntity(selectedBinEntity, this.messageService), HttpStatus.OK);
+            BinMessage message = BinMessage.getFromBinEntity(selectedBinEntity, this.firestoreMessageService);
+            return new ResponseEntity<>(message, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @MessageMapping({"/createBin"})
-    @SendTo("/topic/createdBinNotifications")
-    public ResponseEntity<BinNotification> createBinWS(Bin bin, Principal principal, StompHeaderAccessor accessor) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("clientId", accessor.getFirstNativeHeader("clientId"));
-
-        if (principal == null) {
-            putBinToCreate(bin, headers);
-            return new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
-        }
-
+    @PostMapping("/bin")
+    public ResponseEntity<BinNotification> createBin(Bin bin, Principal principal) {
         BinEntity binEntity = convertBinToEntity(bin, principal);
-        this.messageService.sendCreate(new FirestoreMessageEntity(binEntity.getMessageUUID(), bin.getMessage()));
-
         HttpStatus receivedStatus = createBin(binEntity);
+        BinNotification notification = BinNotification.getFromBinEntity(binEntity);
         if (receivedStatus == HttpStatus.OK) {
-            return new ResponseEntity<>(BinNotification.getFromBinEntity(binEntity), headers, receivedStatus);
-        } else {
-            return new ResponseEntity<>(headers, receivedStatus);
+            FirestoreMessageEntity message = new FirestoreMessageEntity(binEntity.getMessageUUID(), bin.getMessage());
+            this.firestoreMessageService.sendCreate(message);
+            this.messagingTemplate.convertAndSend("/topic/createdBinNotifications",
+                    new ResponseEntity<>(notification, receivedStatus));
         }
+        return new ResponseEntity<>(notification, receivedStatus);
     }
 
-    private void putBinToCreate(Bin bin, HttpHeaders headers) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(bin);
-            headers.add("binToCreate", Base64.getEncoder().encodeToString(json.getBytes()));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException();
+    @DeleteMapping("/bin")
+    public ResponseEntity<BinNotification> deleteBin(String id, Principal principal) {
+        if (principal == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        BinEntity binEntity = this.binDAO.readById(id);
+        BinNotification notification = BinNotification.getFromBinEntity(binEntity);
+        HttpStatus receivedStatus = deleteBin(binEntity, principal);
+        if (receivedStatus == HttpStatus.OK) {
+            this.firestoreMessageService.sendDelete(binEntity.getMessageUUID());
+            this.messagingTemplate.convertAndSend("/topic/deletedBinNotifications",
+                    new ResponseEntity<>(notification, receivedStatus));
+        }
+        return new ResponseEntity<>(notification, receivedStatus);
     }
 
     private BinEntity convertBinToEntity(Bin bin, Principal principal) {
@@ -132,26 +127,6 @@ public class BinRestController {
         }
     }
 
-    @MessageMapping("/deleteBin")
-    @SendTo("/topic/deletedBinNotifications")
-    public ResponseEntity<BinNotification> deleteBinWS(String id, Principal principal, StompHeaderAccessor accessor) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("clientId", accessor.getFirstNativeHeader("clientId"));
-
-        if (principal == null) {
-            headers.add("binToDelete", id);
-            return new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
-        }
-
-        BinEntity binEntity = this.binDAO.readById(id);
-        HttpStatus receivedStatus = deleteBin(binEntity, principal);
-        if (receivedStatus == HttpStatus.OK) {
-            return new ResponseEntity<>(BinNotification.getFromBinEntity(binEntity), headers, receivedStatus);
-        } else {
-            return new ResponseEntity<>(headers, receivedStatus);
-        }
-    }
-
     private HttpStatus deleteBin(BinEntity binEntity, Principal principal) {
         try {
             if (binEntity == null) {
@@ -160,7 +135,6 @@ public class BinRestController {
                 return HttpStatus.FORBIDDEN;
             } else {
                 this.binDAO.delete(binEntity.getId());
-                this.messageService.sendDelete(binEntity.getMessageUUID());
                 return HttpStatus.OK;
             }
         } catch (DataAccessResourceFailureException | QueryTimeoutException e) {

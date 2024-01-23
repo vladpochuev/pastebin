@@ -17,8 +17,7 @@
     <p>You have been signed out</p>
 </div>
 
-<form th:action="@{/login}" method="post">
-    <input type="hidden" name="binToCreate" th:value="${param.binToCreate}">
+<form th:action="@{/login}" method="POST">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
     <br>
@@ -29,7 +28,7 @@
 </form>
 <br>
 <br>
-<button onclick="redirectTo('/signup', 'binToCreate', new URLSearchParams(window.location.search).get('binToCreate'))">
+<button onclick="redirectTo('/signup')">
     Sign up
 </button>
 <p><a href="/map">Home page</a></p>

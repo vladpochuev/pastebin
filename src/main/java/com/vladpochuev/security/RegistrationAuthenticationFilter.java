@@ -35,7 +35,8 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
     private static final String PASSWORD_REGEX = String.format("^(?=.*?[a-z]).{%d,%d}$",
             MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH);
 
-    public RegistrationAuthenticationFilter(UserDAO userDAO, PasswordEncoder passwordEncoder, TokenCookieJweStringSerializer tokenCookieJweStringSerializer) {
+    public RegistrationAuthenticationFilter(UserDAO userDAO, PasswordEncoder passwordEncoder,
+                                            TokenCookieJweStringSerializer tokenCookieJweStringSerializer) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
@@ -43,14 +44,16 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
     }
 
     public RegistrationAuthenticationFilter(AuthenticationManager authenticationManager, UserDAO userDAO,
-                                            PasswordEncoder passwordEncoder, TokenCookieJweStringSerializer tokenCookieJweStringSerializer) {
+                                            PasswordEncoder passwordEncoder,
+                                            TokenCookieJweStringSerializer tokenCookieJweStringSerializer) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER, authenticationManager);
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
         this.tokenCookieJweStringSerializer = tokenCookieJweStringSerializer;
     }
 
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
         String username = this.obtainUsername(request);
         String password = this.obtainPassword(request);
 
@@ -90,10 +93,7 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
         TokenCookieSessionAuthenticationStrategy tokenCookieSessionAuthenticationStrategy = new TokenCookieSessionAuthenticationStrategy();
         tokenCookieSessionAuthenticationStrategy.setTokenStringSerializer(this.tokenCookieJweStringSerializer);
         tokenCookieSessionAuthenticationStrategy.onAuthentication(authResult, request, response);
-
-        String bin = request.getParameter("binToCreate");
-        String url = bin.equals("") ? "/map" : "/map?binToCreate=" + bin;
-        response.sendRedirect(url);
+        response.sendRedirect("/");
     }
 
     @Override

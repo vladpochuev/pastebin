@@ -5,6 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/map.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/ui_menu.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/create_show_forms.css}">
@@ -93,56 +95,54 @@
     </div>
 </div>
 
-<div class="popup-create-bg">
-    <div class="popup-create">
-        <img class="close-popup" th:src="@{/images/close-icon.png}" height="25px" width="25px" alt="">
-        <div class="popup__content">
-            <h2 class="popup_heading">New bin</h2>
-            <form id="pop-up">
-                <label for="popup__title"></label>
-                <input type="text" class="title __req __max-length-100" id="popup__title">
-                <label for="popup__message"></label>
-                <textarea class="message __req" id="popup__message" rows="13"></textarea>
-                <div class="form-color">
-                    <input value="#008000" data-jscolor="" class="color">
-                </div>
-                <div class="form-time-option">
-                    <select class="amount_of_time"></select>
-                </div>
-                <div class="form-button">
-                    <button onclick="extractData('pop-up')">Submit</button>
-                </div>
-            </form>
-        </div>
+<div class="popup-create-bg"></div>
+<div class="popup-create">
+    <img class="close-popup" th:src="@{/images/close-icon.png}" height="25px" width="25px" alt="">
+    <div class="popup__content">
+        <h2 class="popup_heading">New bin</h2>
+        <form id="pop-up">
+            <label for="popup__title"></label>
+            <input type="text" class="title __req __max-length-100" id="popup__title">
+            <label for="popup__message"></label>
+            <textarea class="message __req" id="popup__message" rows="13"></textarea>
+            <div class="form-color">
+                <input value="#008000" data-jscolor="" class="color">
+            </div>
+            <div class="form-time-option">
+                <select class="amount_of_time"></select>
+            </div>
+            <div class="form-button">
+                <button onclick="extractData('pop-up')">Submit</button>
+            </div>
+        </form>
     </div>
 </div>
 
-<div class="popup-show-bg">
-    <div class="popup-show">
-        <img class="close-popup" th:src="@{/images/close-icon.png}" height="25px" width="25px" alt="">
-        <div class="popup__content">
-            <h2 class="show__title">Title</h2>
-            <div class="show__info">
-                <div><img th:src="@{images/user_icon_grey.png}" alt="user icon" height="18px"><span
-                        class="info_username"></span></div>
-                <div><img th:src="@{images/time_icon.png}" alt="time icon" height="18px"><span
-                        class="info_expirationTime"></span></div>
-                <div><img th:src="@{images/compas_icon.png}" alt="compas icon" height="18px"><span
-                        class="info_coords"></span></div>
-                <div class="info_id">
-                    <img th:src="@{images/id_icon.png}" alt="id_icon" height="18px">
-                    <span class="info_id_text"></span>
-                    <span class="link_icons">
+<div class="popup-show-bg"></div>
+<div class="popup-show">
+    <img class="close-popup" th:src="@{/images/close-icon.png}" height="25px" width="25px" alt="">
+    <div class="popup__content">
+        <h2 class="show__title">Title</h2>
+        <div class="show__info">
+            <div><img th:src="@{images/user_icon_grey.png}" alt="user icon" height="18px"><span
+                    class="info_username"></span></div>
+            <div><img th:src="@{images/time_icon.png}" alt="time icon" height="18px"><span
+                    class="info_expirationTime"></span></div>
+            <div><img th:src="@{images/compas_icon.png}" alt="compas icon" height="18px"><span
+                    class="info_coords"></span></div>
+            <div class="info_id">
+                <img th:src="@{images/id_icon.png}" alt="id_icon" height="18px">
+                <span class="info_id_text"></span>
+                <span class="link_icons">
                             <img th:src='@{images/link-icon-grey.png}' class="link_icon" height='16px' width='16px'
                                  alt='copy link'>
                             <img th:src='@{images/link-icon-active.png}' class='link_icon_active' height='16px'
                                  width='16px' alt='copy link' onclick="copyUrl($('.info_id_text').text())">
                     </span>
-                </div>
             </div>
-            <p class="show__message"></p>
-            <button class="show__delete_btn" onclick="deleteBin($('.info_id_text').text())">Delete</button>
         </div>
+        <p class="show__message"></p>
+        <button class="show__delete_btn" onclick="deleteSelectedBin($('.info_id_text').text())">Delete</button>
     </div>
 </div>
 
@@ -156,8 +156,10 @@
 <script th:src="@{/js/lib/sockjs.min.js}"></script>
 <script th:src="@{/js/lib/stomp.min.js}"></script>
 <script th:src="@{/js/lib/toastr.min.js}"></script>
+<script th:src="@{/js/lib/cookie.min.js}"></script>
 <script th:src="@{/js/canvas.js}"></script>
 <script th:src="@{/js/ws.js}"></script>
+<script th:src="@{/js/binREST.js}"></script>
 <script th:src="@{/js/formValidator.js}"></script>
 <script th:src="@{/js/field.js}"></script>
 <script th:src="@{/js/ui.js}"></script>

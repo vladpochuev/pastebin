@@ -20,7 +20,7 @@ public class LinkHandler {
     private final BinDAO binDAO;
     private final SimpMessagingTemplate messagingTemplate;
     private final FirestoreMessageService messageService;
-    private final static String pattern = "yyyy-MM-dd HH:mm:ss";
+    private final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     @Autowired
     public LinkHandler(BinDAO binDAO, SimpMessagingTemplate messagingTemplate, FirestoreMessageService messageService) {
@@ -33,7 +33,7 @@ public class LinkHandler {
         Long time = AmountOfTime.valueOf(amountOfTime).time;
         if (time == null) return null;
         ZonedDateTime expirationTime = ZonedDateTime.now().plus(time, ChronoUnit.MILLIS);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
         return expirationTime.format(dtf);
     }
 
@@ -42,8 +42,8 @@ public class LinkHandler {
         List<BinEntity> binEntities = binDAO.readExpired();
         for (BinEntity binEntity : binEntities) {
             binDAO.delete(binEntity.getId());
-            messageService.sendDelete(binEntity.getMessageUUID());
-            messagingTemplate.convertAndSend("/topic/deletedBinNotifications",
+            this.messageService.sendDelete(binEntity.getMessageUUID());
+            this.messagingTemplate.convertAndSend("/topic/deletedBinNotifications",
                     new ResponseEntity<>(BinNotification.getFromBinEntity(binEntity), HttpStatus.OK));
         }
     }

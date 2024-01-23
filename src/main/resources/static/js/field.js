@@ -9,10 +9,6 @@ class Field {
         this.fillArray()
     }
 
-    getField() {
-        return this.#field
-    }
-
     fillArray() {
         this.#field = []
         for (let i = 0; i <= this.#amountOfCellsX * 2 + 1; i++) {

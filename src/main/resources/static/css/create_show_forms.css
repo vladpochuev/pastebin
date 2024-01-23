@@ -131,6 +131,7 @@ input:checked ~ #new-bin-menu {
 }
 
 .popup-create, .popup-show {
+    display: none;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -185,6 +186,10 @@ input:checked ~ #new-bin-menu {
 
 .info_id .link_icons {
     margin-left: 10px;
+}
+
+.info_username {
+    max-width: 100px;
 }
 
 .show__message {

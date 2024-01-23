@@ -6,8 +6,6 @@ const amountOfCellsX = 100
 const amountOfCellsY = 100
 field = new Field(amountOfCellsX, amountOfCellsY)
 let ws = new WS()
-window.clientId = crypto.randomUUID()
-const binToCreate = new URLSearchParams(window.location.search).get('binToCreate')
 
 const camera = {
     left: 0,
@@ -44,7 +42,7 @@ const extractData = (form) => {
 
     const bin = composeObject(form)
     if (ws.connected) {
-        ws.createBin(bin)
+        createBin(bin)
         closePopup(form)
         clearForm(form)
     } else {
@@ -79,9 +77,9 @@ const extractFormFieldValue = (form, field) => {
     return $(form + ' ' + field).val().trim()
 }
 
-const deleteBin = id => {
+const deleteSelectedBin = id => {
     if (ws.connected) {
-        ws.deleteBin(id)
+        deleteBin(id)
         closePopup('#pop-up')
     } else {
         toastr.error('Server is not responding')
@@ -89,24 +87,7 @@ const deleteBin = id => {
 }
 
 const getAndShowBin = (id) => {
-    $.ajax({
-        url: '/api/bin',
-        method: 'get',
-        dataType: 'json',
-        data: {id: id},
-        success: function (data) {
-            showBin(data)
-        },
-        error: function (data) {
-            if (data.code === 'NOT_FOUND') {
-                toastr.error('Bin was not found')
-            } else if (data.code === 'INTERNAL_SERVER_ERROR') {
-                toastr.error('Error while getting the bin')
-            } else {
-                toastr.error('Server is not responding')
-            }
-        }
-    })
+    getBin(id).then(data => showBin(data))
 }
 
 if (urlBin !== null) {
@@ -115,15 +96,7 @@ if (urlBin !== null) {
         canvas.relativePan(new fabric.Point(0, 0))
         showBin(urlBin.body)
     } else if (urlBin.statusCode === 'NOT_FOUND') {
-        toastr.error("Bin was not found")
-    }
-}
-
-const checkBinToCreate = () => {
-    if (binToCreate !== null && binToCreate !== "") {
-        let bin = atob(binToCreate.substring(1, binToCreate.length - 1));
-        let binObject = JSON.parse(bin)
-        ws.createBin(binObject)
+        toastr.error('Bin was not found')
     }
 }
 
@@ -132,7 +105,7 @@ const copyUrl = async (id) => {
     url.searchParams.set('id', id)
     await navigator.clipboard.writeText(url.toString())
 
-    toastr.success("Copied to clipboard")
+    toastr.success('Copied to clipboard')
 }
 
 function redirectTo(path, ...params) {
@@ -149,4 +122,11 @@ function redirectTo(path, ...params) {
     }
 
     document.location.href = url.toString()
+}
+
+const sendBinToCreate = () => {
+    const binToCreate = getCookie('Bin-to-create')
+    if (binToCreate) {
+        createBin(JSON.parse(binToCreate), false)
+    }
 }

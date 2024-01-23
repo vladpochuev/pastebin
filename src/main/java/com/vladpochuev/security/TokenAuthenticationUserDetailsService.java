@@ -19,14 +19,19 @@ public class TokenAuthenticationUserDetailsService
     }
 
     @Override
-    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken authenticationToken) throws UsernameNotFoundException {
+    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken authenticationToken)
+            throws UsernameNotFoundException {
         if (authenticationToken.getPrincipal() instanceof Token token) {
             List<SimpleGrantedAuthority> authorities = token.authorities().stream()
                     .map(SimpleGrantedAuthority::new)
                     .toList();
             return new TokenUser(token.subject(), "nopassword", true, true,
                     Boolean.FALSE.equals(this.jdbcTemplate.queryForObject("""
-                            SELECT EXISTS(SELECT id FROM deactivated_tokens WHERE id = ?)
+                            SELECT EXISTS(
+                                SELECT id 
+                                FROM deactivated_tokens 
+                                WHERE id = ?
+                            )
                             """, Boolean.class, token.id())) &&
                             token.expiresAt().isAfter(Instant.now()), true, authorities, token);
         }

@@ -11,8 +11,8 @@ public class BFS<Obj extends Placeable> {
     private boolean[][] field;
     private final Deque<Point> deque = new ArrayDeque<>();
     private final DAO<Obj> dao;
-    private final int amountOfCellsX = 100;
-    private final int amountOfCellsY = 100;
+    private int amountOfCellsX = 100;
+    private int amountOfCellsY = 100;
 
     public BFS(DAO<Obj> dao) {
         this.dao = dao;
@@ -51,5 +51,21 @@ public class BFS<Obj extends Placeable> {
                 deque.add(nearbyPoint);
             }
         }
+    }
+
+    public int getAmountOfCellsX() {
+        return amountOfCellsX;
+    }
+
+    public int getAmountOfCellsY() {
+        return amountOfCellsY;
+    }
+
+    public void setAmountOfCellsX(int amountOfCellsX) {
+        this.amountOfCellsX = amountOfCellsX;
+    }
+
+    public void setAmountOfCellsY(int amountOfCellsY) {
+        this.amountOfCellsY = amountOfCellsY;
     }
 }

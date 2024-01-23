@@ -20,8 +20,7 @@
     </div>
 </div>
 
-<form th:action="@{/signup}" th:method="POST">
-    <input type="hidden" name="binToCreate" th:value="${param.binToCreate}">
+<form th:action="@{/signup}" method="POST">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
     <br>
@@ -32,7 +31,7 @@
 </form>
 <br>
 <br>
-<button onclick="redirectTo('/login', 'binToCreate', new URLSearchParams(window.location.search).get('binToCreate'))">
+<button onclick="redirectTo('/login')">
     Log in
 </button>
 <p>

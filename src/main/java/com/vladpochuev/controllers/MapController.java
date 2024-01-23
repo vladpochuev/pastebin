@@ -55,7 +55,8 @@ public class MapController {
 
     private ResponseEntity<BinMessage> defineMessage(BinEntity selectedBinEntity) {
         if (selectedBinEntity != null) {
-            return new ResponseEntity<>(BinMessage.getFromBinEntity(selectedBinEntity, this.messageService), HttpStatus.OK);
+            BinMessage message = BinMessage.getFromBinEntity(selectedBinEntity, this.messageService);
+            return new ResponseEntity<>(message, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

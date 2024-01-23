@@ -14,6 +14,9 @@ public class DeactivatedTokensHandler {
 
     @Scheduled(fixedDelay = 60000)
     public void deleteExpired() {
-        jdbcTemplate.update("DELETE FROM deactivated_tokens WHERE expirationTime < NOW()");
+        jdbcTemplate.update("""
+                DELETE FROM deactivated_tokens
+                WHERE expirationTime < NOW()
+                """);
     }
 }

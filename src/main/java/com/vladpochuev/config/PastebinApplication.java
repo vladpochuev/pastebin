@@ -66,7 +66,8 @@ public class PastebinApplication {
 
     @Bean
     public TokenCookieJweStringSerializer tokenCookieJweStringSerializer(
-            @Value("${jwt.cookie-token-key}") String cookieTokenKey) throws ParseException, KeyLengthException {
+            @Value("${jwt.cookie-token-key}") String cookieTokenKey)
+            throws ParseException, KeyLengthException {
         return new TokenCookieJweStringSerializer(new DirectEncrypter(
                 OctetSequenceKey.parse(cookieTokenKey)
         ));
@@ -97,14 +98,10 @@ public class PastebinApplication {
 
         http
                 .formLogin(conf -> conf
-                        .loginPage("/login")
-                        .successHandler((request, response, authentication) -> {
-                            String bin = request.getParameter("binToCreate");
-                            String url = bin.equals("") ? "/map" : "/map?binToCreate=" + bin;
-                            response.sendRedirect(url);
-                        }))
+                        .loginPage("/login"))
                 .addFilterAfter(new GetCsrfTokenFilter(), ExceptionTranslationFilter.class)
                 .addFilterBefore(registrationAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new RestAuthenticatedFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers(
@@ -114,26 +111,27 @@ public class PastebinApplication {
                                         "/css/**",
                                         "/js/**",
                                         "/images/**",
-                                        "/api/**").permitAll()
+                                        "/api/**",
+                                        "/csrf").permitAll()
                                 .requestMatchers(
                                         "/login",
                                         "/signup").anonymous()
                                 .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .sessionAuthenticationStrategy(tokenCookieSessionAuthenticationStrategy))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(new CookieCsrfTokenRepository())
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                        .sessionAuthenticationStrategy((authentication, request, response) -> {
-                        }));
+                        .sessionAuthenticationStrategy((authentication, request, response) -> {}));
 
         http.apply(tokenCookieAuthenticationConfigurer);
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 

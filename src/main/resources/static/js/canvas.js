@@ -21,7 +21,7 @@ const initCanvas = () => {
 const setPanEvents = (canvas) => {
     canvas.on('mouse:move', e => {
         const point = getExactPoint(e)
-        const coords = document.querySelector(".current_coords")
+        const coords = document.querySelector('.current_coords')
         coords.textContent = `(${point.x};${-point.y})`
 
         if (mousePressed && e.button === 1) {
@@ -39,7 +39,7 @@ const setPanEvents = (canvas) => {
             let point = getExactPoint(e)
             window.lastClickX = point.x
             window.lastClickY = point.y
-            openPopup('popup-create-bg')
+            openPopup('popup-create')
         }
     })
 
@@ -104,7 +104,7 @@ const zoom = (delta, offsetX, offsetY) => {
 
 const setZoomTitle = (zoom) => {
     const zoomLevel = document.querySelector('#zoom-level')
-    zoomLevel.textContent = Math.ceil(zoom * 100) + "%"
+    zoomLevel.textContent = Math.ceil(zoom * 100) + '%'
 }
 
 const getPointer = (e) => {

@@ -37,12 +37,6 @@ const formRemoveError = (input) => {
     input.classList.remove('__error')
 }
 
-const setFormEvents = () => {
-    $("form").on('submit', function (e) {
-        e.preventDefault()
-    })
-}
-
 const isLengthValid = input => {
     let el = input.getAttribute('class').split(' ').filter(e => e.startsWith('__max-length')).toString()
     return (input.value.length <= parseInt(el.match(/\d+$/).toString()));

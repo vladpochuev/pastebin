@@ -22,17 +22,18 @@ public class TokenCookieSessionAuthenticationStrategy implements SessionAuthenti
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
             Token token = this.tokenCookieFactory.apply(authentication);
             String tokenString = this.tokenStringSerializer.apply(token);
-
             Cookie cookie = new Cookie("__Host-auth-token", tokenString);
-
-            cookie.setPath("/");
-            cookie.setDomain(null);
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge((int) ChronoUnit.SECONDS.between(Instant.now(), token.expiresAt()));
-
+            setCookieProperties(cookie, token);
             response.addCookie(cookie);
         }
+    }
+
+    private void setCookieProperties(Cookie cookie, Token token) {
+        cookie.setPath("/");
+        cookie.setDomain(null);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge((int) ChronoUnit.SECONDS.between(Instant.now(), token.expiresAt()));
     }
 
     public void setTokenCookieFactory(Function<Authentication, Token> tokenCookieFactory) {
