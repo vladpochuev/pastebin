@@ -2,7 +2,7 @@ package com.vladpochuev.controllers;
 
 import com.vladpochuev.dao.BinDAO;
 import com.vladpochuev.model.*;
-import com.vladpochuev.service.BFS;
+import com.vladpochuev.dao.BinDaoBFS;
 import com.vladpochuev.service.FirestoreMessageService;
 import com.vladpochuev.service.HashGenerator;
 import com.vladpochuev.service.LinkHandler;
@@ -36,7 +36,7 @@ public class BinRestController {
     }
 
     @GetMapping("/bin")
-    public ResponseEntity<BinMessage> getBin(@RequestParam("id") String id) {
+    public ResponseEntity<BinMessage> getBin(String id) {
         try {
             BinEntity binEntity = this.binDAO.readById(id);
             return defineMessage(binEntity);
@@ -114,10 +114,10 @@ public class BinRestController {
 
     private void createBinWithBFS(BinEntity binEntity) {
         while (true) {
-            BFS<BinEntity> bfs = new BFS<>(this.binDAO);
-            bfs.fillField();
+            BinDaoBFS binDaoBFS = new BinDaoBFS(this.binDAO);
+            binDaoBFS.fillField();
             try {
-                Point coords = bfs.findNearest();
+                Point coords = binDaoBFS.findNearest();
                 binEntity.setX(coords.getX());
                 binEntity.setY(coords.getY());
                 this.binDAO.create(binEntity);

@@ -1,6 +1,5 @@
 package com.vladpochuev.service;
 
-import com.vladpochuev.dao.DAO;
 import com.vladpochuev.model.Placeable;
 import com.vladpochuev.model.Point;
 
@@ -8,14 +7,27 @@ import java.util.*;
 
 public class BFS<Obj extends Placeable> {
     private final HashSet<Point> searched = new HashSet<>();
-    private boolean[][] field;
     private final Deque<Point> deque = new ArrayDeque<>();
-    private final DAO<Obj> dao;
-    private int amountOfCellsX = 100;
-    private int amountOfCellsY = 100;
+    private boolean[][] field;
+    private int amountOfCellsX;
+    private int amountOfCellsY;
 
-    public BFS(DAO<Obj> dao) {
-        this.dao = dao;
+    public BFS(int amountOfCellsX, int amountOfCellsY) {
+        this.amountOfCellsX = amountOfCellsX;
+        this.amountOfCellsY = amountOfCellsY;
+        field = new boolean[amountOfCellsX * 2 + 1][amountOfCellsY * 2 + 1];
+    }
+
+    public void add(Obj object) {
+        field[object.getX() + amountOfCellsX][object.getY() + amountOfCellsY] = true;
+    }
+
+    public void remove(Obj object) {
+        field[object.getX() + amountOfCellsX][object.getY() + amountOfCellsY] = false;
+    }
+
+    public void clearField() {
+        field = new boolean[amountOfCellsX * 2 + 1][amountOfCellsY * 2 + 1];
     }
 
     public Point findNearest() {
@@ -28,14 +40,6 @@ public class BFS<Obj extends Placeable> {
 
         field[curPoint.getX() + amountOfCellsX][curPoint.getY() + amountOfCellsY] = true;
         return curPoint;
-    }
-
-    public void fillField() {
-        field = new boolean[amountOfCellsX * 2 + 1][amountOfCellsY * 2 + 1];
-        List<Obj> objects = dao.read();
-        for (Obj object : objects) {
-            field[object.getX() + amountOfCellsX][object.getY() + amountOfCellsY] = true;
-        }
     }
 
     private void addNearbyPoints(Point curPoint) {
@@ -63,9 +67,11 @@ public class BFS<Obj extends Placeable> {
 
     public void setAmountOfCellsX(int amountOfCellsX) {
         this.amountOfCellsX = amountOfCellsX;
+        clearField();
     }
 
     public void setAmountOfCellsY(int amountOfCellsY) {
         this.amountOfCellsY = amountOfCellsY;
+        clearField();
     }
 }

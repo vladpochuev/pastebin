@@ -85,9 +85,7 @@ function deleteBin(id) {
         url: '/api/bin',
         method: 'delete',
         dataType: 'json',
-        data: {
-            id: id
-        },
+        data: {id: id},
         headers: {
             [header]: token
         },

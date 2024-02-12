@@ -10,9 +10,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Period;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.List;
 
 @Service
@@ -20,7 +22,7 @@ public class LinkHandler {
     private final BinDAO binDAO;
     private final SimpMessagingTemplate messagingTemplate;
     private final FirestoreMessageService messageService;
-    private final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    private String dateTimePattern = "yyyy-MM-dd HH:mm:ss";
 
     @Autowired
     public LinkHandler(BinDAO binDAO, SimpMessagingTemplate messagingTemplate, FirestoreMessageService messageService) {
@@ -30,10 +32,10 @@ public class LinkHandler {
     }
 
     public String getExpirationTime(String amountOfTime) {
-        Long time = AmountOfTime.valueOf(amountOfTime).time;
+        TemporalAmount time = AmountOfTime.valueOf(amountOfTime).time;
         if (time == null) return null;
-        ZonedDateTime expirationTime = ZonedDateTime.now().plus(time, ChronoUnit.MILLIS);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+        ZonedDateTime expirationTime = ZonedDateTime.now().plus(time);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dateTimePattern);
         return expirationTime.format(dtf);
     }
 
@@ -48,19 +50,27 @@ public class LinkHandler {
         }
     }
 
+    public String getDateTimePattern() {
+        return dateTimePattern;
+    }
+
+    public void setDateTimePattern(String dateTimePattern) {
+        this.dateTimePattern = dateTimePattern;
+    }
+
     enum AmountOfTime {
         INFINITE(null),
-        ONE_MINUTE(1000 * 60L),
-        TEN_MINUTES(ONE_MINUTE.time * 10),
-        ONE_HOUR(ONE_MINUTE.time * 60),
-        ONE_DAY(ONE_HOUR.time * 24),
-        ONE_WEEK(ONE_DAY.time * 7),
-        ONE_MONTH(ONE_DAY.time * 30),
-        SIX_MONTHS(ONE_MONTH.time * 6);
+        ONE_MINUTE(Duration.ofMinutes(1)),
+        TEN_MINUTES(Duration.ofMinutes(10)),
+        ONE_HOUR(Duration.ofHours(1)),
+        ONE_DAY(Period.ofDays(1)),
+        ONE_WEEK(Period.ofWeeks(1)),
+        ONE_MONTH(Period.ofMonths(1)),
+        SIX_MONTHS(Period.ofMonths(6));
 
-        private final Long time;
+        private final TemporalAmount time;
 
-        AmountOfTime(Long time) {
+        AmountOfTime(TemporalAmount time) {
             this.time = time;
         }
     }

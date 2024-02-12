@@ -28,8 +28,8 @@ public class TokenAuthenticationUserDetailsService
             return new TokenUser(token.subject(), "nopassword", true, true,
                     Boolean.FALSE.equals(this.jdbcTemplate.queryForObject("""
                             SELECT EXISTS(
-                                SELECT id 
-                                FROM deactivated_tokens 
+                                SELECT id
+                                FROM deactivated_tokens
                                 WHERE id = ?
                             )
                             """, Boolean.class, token.id())) &&

@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta th:name="_csrf" th:content="${_csrf.token}"/>
     <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/map.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/ui_menu.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/create_show_forms.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/lib/toastr.min.css}">
+    <link rel="stylesheet" th:href="@{/css/map.css}">
+    <link rel="stylesheet" th:href="@{/css/ui_menu.css}">
+    <link rel="stylesheet" th:href="@{/css/create_show_forms.css}">
+    <link rel="stylesheet" th:href="@{/css/lib/toastr.min.css}">
     <title>Bins</title>
 </head>
 <body oncontextmenu="return false">
@@ -51,7 +51,7 @@
                 <form id="drop-down">
                     <h2 class="dropdown_heading">New bin</h2>
                     <div class="create__title">
-                        <input tabindex="-1" type="text" class="title __req __max-length-100" id="create__title_input">
+                        <input tabindex="-1" type="data" class="title __req __max-length-100" id="create__title_input">
                         <label for="create__title_input"></label>
                     </div>
                     <div class="create__text">
@@ -64,10 +64,10 @@
                             <div class="coords__radio">
                                 <input tabindex="-1" type="radio" name="coords__radio" checked id="coords__input">
                                 <label for="coords__x">x:</label>
-                                <input tabindex="-1" type="text" class="__req __min-value_-100 __max-value_100"
+                                <input tabindex="-1" type="data" class="__req __min-value_-100 __max-value_100"
                                        id="coords__x">
                                 <label for="coords__y">y:</label>
-                                <input tabindex="-1" type="text" class="__req __min-value_-100 __max-value_100"
+                                <input tabindex="-1" type="data" class="__req __min-value_-100 __max-value_100"
                                        id="coords__y">
                             </div>
                         </div>
@@ -102,7 +102,7 @@
         <h2 class="popup_heading">New bin</h2>
         <form id="pop-up">
             <label for="popup__title"></label>
-            <input type="text" class="title __req __max-length-100" id="popup__title">
+            <input type="data" class="title __req __max-length-100" id="popup__title">
             <label for="popup__message"></label>
             <textarea class="message __req" id="popup__message" rows="13"></textarea>
             <div class="form-color">

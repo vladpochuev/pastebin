@@ -4,24 +4,33 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class HashGenerator {
-    private String text;
+    private Object[] data;
 
-    public HashGenerator(Object... values) {
-        StringBuilder builder = new StringBuilder();
-        for (Object value : values) {
-            builder.append(value.toString());
-        }
-        text = builder.toString();
+    public HashGenerator(Object... data) {
+        updateDataForHashing(data);
+    }
+
+    public void updateDataForHashing(Object... values) {
+        this.data = values;
     }
 
     public String getHash(String algorithm, int length) {
         try {
+            String stringValues = joinValues(data);
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
-            byte[] bytes = messageDigest.digest(text.getBytes());
+            byte[] bytes = messageDigest.digest(stringValues.getBytes());
             return convertToString(bytes).substring(0, length);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String joinValues(Object... values) {
+        StringBuilder builder = new StringBuilder();
+        for (Object value : values) {
+            builder.append(value.toString());
+        }
+        return builder.toString();
     }
 
     private String convertToString(byte[] bytes) {
@@ -32,8 +41,7 @@ public class HashGenerator {
         return sb.toString();
     }
 
-
-    public void setText(String text) {
-        this.text = text;
+    public Object[] getData() {
+        return data;
     }
 }

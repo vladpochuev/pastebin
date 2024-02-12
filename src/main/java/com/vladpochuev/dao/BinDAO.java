@@ -40,7 +40,7 @@ public class BinDAO implements DAO<BinEntity> {
     }
 
     public List<BinEntity> readExpired() {
-        return this.jdbcTemplate.query("SELECT * FROM bin WHERE expirationTime < NOW() ",
+        return this.jdbcTemplate.query("SELECT * FROM bin WHERE expirationTime < NOW()",
                 new BeanPropertyRowMapper<>(BinEntity.class));
     }
 

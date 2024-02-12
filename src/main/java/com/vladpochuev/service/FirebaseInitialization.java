@@ -27,6 +27,5 @@ public class FirebaseInitialization {
                 .build();
 
         FirebaseApp.initializeApp(options);
-
     }
 }
