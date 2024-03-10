@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,14 +18,14 @@
     <div class="blank"></div>
     <h1 class="current_coords"></h1>
     <div class="authorization">
-        <div sec:authorize="isAnonymous()">
+        <div th:if="${authentication == null}">
             <a href="/login">Login</a>
             <a href="/signup">Sign Up</a>
         </div>
-        <div sec:authorize="isAuthenticated()">
+        <div th:if="${authentication != null}">
             <div class="profile">
                 <img th:src="@{images/user_icon_black.png}" alt="profile_icon" height="22px">
-                <div class="profile_username" sec:authentication="name"></div>
+                <div class="profile_username" th:text="${authentication.name}"></div>
             </div>
             <a href="/logout">Log out</a>
         </div>

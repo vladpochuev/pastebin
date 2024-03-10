@@ -39,6 +39,18 @@ build/
 
 ### Applicaton properties ###
 src/main/resources/application.yml
-src/main/resources/firebaseKey.json
+
+### Files for quick code cases testing ###
 src/main/java/Test.java
 src/main/resources/static/js/test.js
+
+### Private keys ###
+src/main/resources/firebaseKey.json
+src/main/resources/keystore.p12
+
+### Shell scripts ###
+start.sh
+deploy.sh
+
+### Maven shaded plugin ###
+dependency-reduced-pom.xml

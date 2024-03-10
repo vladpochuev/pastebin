@@ -9,6 +9,7 @@ import com.vladpochuev.service.FirestoreMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +34,11 @@ public class MapController {
     }
 
     @GetMapping("/map")
-    public String getMenu(Model model, @RequestParam(value = "id", required = false) String id) {
+    public String getMenu(Model model, Authentication authentication, @RequestParam(value = "id", required = false) String id) {
         BinEntity selectedBinEntity = this.binDAO.readById(id);
 
         ResponseEntity<BinMessage> urlBin = id == null ? null : defineMessage(selectedBinEntity);
+        model.addAttribute("authentication", authentication);
         model.addAttribute("urlBin", urlBin);
         model.addAttribute("bins", getBinEntities());
         return "map";

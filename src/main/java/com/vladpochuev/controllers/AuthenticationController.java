@@ -9,17 +9,17 @@ public class AuthenticationController {
     @GetMapping("/login")
     public String getLoginPage(@RequestParam(value = "binToCreate", required = false) String bin, Model model) {
         model.addAttribute("binToCreate", bin);
-        return "/login";
+        return "login";
     }
 
     @GetMapping("/signup")
     public String getRegistrationPage(Model model, @RequestParam(value = "binToCreate", required = false) String bin) {
         model.addAttribute("binToCreate", bin);
-        return "/registration";
+        return "registration";
     }
 
     @GetMapping("/logout")
     public String getLogoutPage() {
-        return "/logout";
+        return "logout";
     }
 }

@@ -5,7 +5,6 @@ import com.vladpochuev.model.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +31,7 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
     private static final int MAX_PASSWORD_LENGTH = 30;
     private static final String USERNAME_REGEX = String.format("^(?=[a-zA-Z0-9._]{%d,%d}$)(?!.*[_.]{2})[^_.].*[^_.]$",
             MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
-    private static final String PASSWORD_REGEX = String.format("^(?=.*?[a-z]).{%d,%d}$",
+    private static final String PASSWORD_REGEX = String.format("^(?=.*?[A-ZА-Я]).{%d,%d}$",
             MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH);
 
     public RegistrationAuthenticationFilter(UserDAO userDAO, PasswordEncoder passwordEncoder,
@@ -77,7 +76,7 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
     private void createUser(String username, String password) {
         try {
             User user = new User();
-            user.setId(UUID.randomUUID().toString());
+            user.setId(UUID.randomUUID());
             user.setUsername(username);
             user.setPassword(this.passwordEncoder.encode(password));
 
@@ -112,13 +111,11 @@ public class RegistrationAuthenticationFilter extends AbstractAuthenticationProc
         response.sendRedirect("/signup?error" + (errorMessage == null ? "" : "=" + errorMessage));
     }
 
-    @NotNull
     protected String obtainPassword(HttpServletRequest request) {
         String password = request.getParameter(this.passwordParameter);
         return password != null ? password.trim() : "";
     }
 
-    @NotNull
     protected String obtainUsername(HttpServletRequest request) {
         String username = request.getParameter(this.usernameParameter);
         return username != null ? username.trim() : "";

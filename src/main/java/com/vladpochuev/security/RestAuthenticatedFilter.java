@@ -41,7 +41,7 @@ public class RestAuthenticatedFilter extends OncePerRequestFilter {
 
     private void returnErrorMessage(HttpServletRequest request, HttpServletResponse response)
             throws JsonProcessingException {
-        if (Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals(this.cookieName))) {
+        if (request.getCookies() != null && Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals(this.cookieName))) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
             Bin bin = composeBin(request);
