@@ -16,10 +16,9 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class RestAuthenticatedFilter extends OncePerRequestFilter {
     private RequestMatcher requestMatcher = new AntPathRequestMatcher("/api/bin", HttpMethod.POST.name());
@@ -41,16 +40,22 @@ public class RestAuthenticatedFilter extends OncePerRequestFilter {
 
     private void returnErrorMessage(HttpServletRequest request, HttpServletResponse response)
             throws JsonProcessingException {
-        if (request.getCookies() != null && Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals(this.cookieName))) {
+        Cookie cookie = createCookieWithBinProperties(request);
+        response.addCookie(cookie);
+        if (request.getCookies() != null && Arrays.stream(request.getCookies()).anyMatch(c -> c.getName().equals(this.cookieName))) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            Bin bin = composeBin(request);
-            String encodedBin = URLEncoder.encode(objectMapper.writeValueAsString(bin), StandardCharsets.UTF_8);
-            Cookie cookie = new Cookie(this.cookieName, encodedBin);
-            setCookieProperties(cookie);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.addCookie(cookie);
         }
+    }
+
+    private Cookie createCookieWithBinProperties(HttpServletRequest request) throws JsonProcessingException {
+        Bin bin = composeBin(request);
+        String binJSON = objectMapper.writeValueAsString(bin);
+        String encodedBin = Base64.getEncoder().encodeToString(binJSON.getBytes());
+        Cookie cookie = new Cookie(this.cookieName, encodedBin);
+        setCookieProperties(cookie);
+        return cookie;
     }
 
     private Bin composeBin(HttpServletRequest request) {

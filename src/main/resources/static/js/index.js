@@ -127,6 +127,6 @@ function redirectTo(path, ...params) {
 const sendBinToCreate = () => {
     const binToCreate = getCookie('Bin-to-create')
     if (binToCreate) {
-        createBin(JSON.parse(binToCreate), false)
+        createBin(JSON.parse(atob(binToCreate)), false)
     }
 }

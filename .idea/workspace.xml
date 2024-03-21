@@ -10,26 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f0e121f-fd1e-4aa0-89e2-ea0079d39f69" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/database_structure.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/webContexts.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vladpochuev/controllers/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vladpochuev/controllers/AuthenticationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vladpochuev/controllers/MapController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vladpochuev/controllers/MapController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vladpochuev/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vladpochuev/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vladpochuev/security/RegistrationAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vladpochuev/security/RegistrationAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/626d15f0-8051-4b03-a552-1f3c8b780056.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/626d15f0-8051-4b03-a552-1f3c8b780056.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/626d15f0-8051-4b03-a552-1f3c8b780056/storage_v2/_src_/database/pastebin_db.Caez7A/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/626d15f0-8051-4b03-a552-1f3c8b780056/storage_v2/_src_/database/pastebin_db.Caez7A/schema/public.abK9xQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/vladpochuev/security/RestAuthenticatedFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vladpochuev/security/RestAuthenticatedFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/error.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/error.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/map.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/map.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/registration.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/registration.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/js/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,7 +94,7 @@
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;experimentalPlugin&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;spring.configuration.checksum&quot;: &quot;4124350084d609d1b554a6c93bafca34&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -131,11 +116,11 @@
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\java\com\vladpochuev\security" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources\static\css" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources\static" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources\static\js\lib" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources\static\images" />
-      <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources\templates\errors" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -150,6 +135,13 @@
     </key>
   </component>
   <component name="RunManager" selected="Shell Script.deploy.sh">
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test" />
+      <module name="pastebin" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="curl.sh" type="ShConfigurationType" temporary="true">
       <option name="SCRIPT_TEXT" value="" />
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
@@ -195,24 +187,10 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="test.sh" type="ShConfigurationType" temporary="true">
-      <option name="SCRIPT_TEXT" value="" />
-      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
-      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/test.sh" />
-      <option name="SCRIPT_OPTIONS" value="" />
-      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
-      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
-      <option name="INTERPRETER_PATH" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="EXECUTE_IN_TERMINAL" value="true" />
-      <option name="EXECUTE_SCRIPT_FILE" value="true" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <configuration name="PastebinApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="pastebin" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.vladpochuev.config.PastebinApplication" />
+      <option name="VM_PARAMETERS" value="-Dssl.keystore.path=src/main/resources/keystore.p12 -Dfirebase.key.location=src/main/resources/firebaseKey.json" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.vladpochuev.config.*" />
@@ -230,8 +208,8 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Application.Test" />
       <item itemvalue="Shell Script.deploy.sh" />
-      <item itemvalue="Shell Script.test.sh" />
       <item itemvalue="Shell Script.curl.sh" />
       <item itemvalue="Shell Script.start.sh" />
       <item itemvalue="Spring Boot.PastebinApplication" />
@@ -239,10 +217,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Shell Script.deploy.sh" />
-        <item itemvalue="Shell Script.curl.sh" />
-        <item itemvalue="Shell Script.start.sh" />
         <item itemvalue="Spring Boot.PastebinApplication" />
-        <item itemvalue="Shell Script.test.sh" />
+        <item itemvalue="Application.Test" />
+        <item itemvalue="Shell Script.start.sh" />
+        <item itemvalue="Shell Script.curl.sh" />
       </list>
     </recent_temporary>
   </component>
@@ -466,7 +444,21 @@
       <workItem from="1709806881679" duration="5543000" />
       <workItem from="1709883209966" duration="820000" />
       <workItem from="1709969600645" duration="6181000" />
-      <workItem from="1710053826712" duration="9682000" />
+      <workItem from="1710053826712" duration="11578000" />
+      <workItem from="1710266531339" duration="7746000" />
+      <workItem from="1710322836015" duration="7437000" />
+      <workItem from="1710358307560" duration="633000" />
+      <workItem from="1710403908503" duration="1558000" />
+      <workItem from="1710515958257" duration="1207000" />
+      <workItem from="1710672539484" duration="7242000" />
+      <workItem from="1710691720101" duration="2170000" />
+      <workItem from="1710786739369" duration="1062000" />
+      <workItem from="1710850560862" duration="7671000" />
+      <workItem from="1710865148889" duration="9445000" />
+      <workItem from="1710885938854" duration="2001000" />
+      <workItem from="1710928787629" duration="768000" />
+      <workItem from="1710969511706" duration="861000" />
+      <workItem from="1711041068449" duration="3885000" />
     </task>
     <servers />
   </component>
@@ -483,5 +475,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
