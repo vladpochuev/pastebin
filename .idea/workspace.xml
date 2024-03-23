@@ -10,9 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f0e121f-fd1e-4aa0-89e2-ea0079d39f69" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/database_structure.sql" beforeDir="false" afterPath="$PROJECT_DIR$/database_structure.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +81,7 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "jdk.selected.JAVA_MODULE": "18",
-    "last_opened_file_path": "C:/Users/HOME/Desktop/edu/java/pastebin",
+    "last_opened_file_path": "C:/Users/HOME/Desktop/edu/java/pastebin/github/images",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -108,11 +106,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\github\images" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources\static\images" />
       <recent name="compas_icon.png id_icon.png time_icon.png user_icon.png" />
-      <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\java\com\vladpochuev\security" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources" />
@@ -460,7 +458,7 @@
       <workItem from="1711041068449" duration="3885000" />
       <workItem from="1711101640902" duration="2701000" />
       <workItem from="1711122213706" duration="781000" />
-      <workItem from="1711190242654" duration="4211000" />
+      <workItem from="1711190242654" duration="5054000" />
     </task>
     <servers />
   </component>
