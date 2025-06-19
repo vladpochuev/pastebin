@@ -26,13 +26,33 @@ a:hover {
     height: 20px;
 }
 
-.link_icon {
+.link_icon_wrapper {
+    display: inline-block;
+    position: relative;
+    width: 16px;
+    height: 16px;
     cursor: pointer;
-    position: absolute;
 }
 
-.link_icon:hover {
-    display: none;
+.link_icon, .link_icon_active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    transition: opacity 0.2s ease;
+}
+
+.link_icon_active {
+    opacity: 0;
+}
+
+.link_icon_wrapper:hover .link_icon {
+    opacity: 0;
+}
+
+.link_icon_wrapper:hover .link_icon_active {
+    opacity: 1;
 }
 
 .__error {

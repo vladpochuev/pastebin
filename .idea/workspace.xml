@@ -11,6 +11,10 @@
   <component name="ChangeListManager">
     <list default="true" id="9f0e121f-fd1e-4aa0-89e2-ea0079d39f69" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/create_show_forms.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/create_show_forms.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/map.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/map.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/binREST.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/js/binREST.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/map.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/map.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,52 +66,52 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ToolWindowGit.ShowToolbar": "false",
-    "ToolWindowRun.ShowToolbar": "false",
-    "WebServerToolWindowFactoryState": "false",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "jdk.selected.JAVA_MODULE": "18",
-    "last_opened_file_path": "C:/Users/HOME/Desktop/edu/java/pastebin/github/images",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "spring.configuration.checksum": "4124350084d609d1b554a6c93bafca34",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ToolWindowGit.ShowToolbar&quot;: &quot;false&quot;,
+    &quot;ToolWindowRun.ShowToolbar&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;18&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/HOME/Desktop/edu/java/web-labs&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;4124350084d609d1b554a6c93bafca34&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ],
-    "RunConfigurationTargetLRU": [
-      "626d15f0-8051-4b03-a552-1f3c8b780056"
+    &quot;RunConfigurationTargetLRU&quot;: [
+      &quot;626d15f0-8051-4b03-a552-1f3c8b780056&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\github\images" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin" />
+      <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\github\images" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources" />
       <recent name="C:\Users\HOME\Desktop\edu\java\pastebin\src\main\resources\static\images" />
       <recent name="compas_icon.png id_icon.png time_icon.png user_icon.png" />
@@ -131,7 +135,7 @@
       <recent name="com.vladpochuev.security" />
     </key>
   </component>
-  <component name="RunManager" selected="Shell Script.deploy.sh">
+  <component name="RunManager" selected="Spring Boot.PastebinApplication">
     <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Test" />
       <module name="pastebin" />
@@ -187,7 +191,7 @@
     <configuration name="PastebinApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="pastebin" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.vladpochuev.config.PastebinApplication" />
-      <option name="VM_PARAMETERS" value="-Dssl.keystore.path=src/main/resources/keystore.p12 -Dfirebase.key.location=src/main/resources/firebaseKey.json" />
+      <option name="VM_PARAMETERS" value="-Dssl.keystore.path=src/main/resources/keystore.pfx -Dfirebase.key.location=src/main/resources/firebaseKey.json" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.vladpochuev.config.*" />
@@ -213,8 +217,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Shell Script.deploy.sh" />
         <item itemvalue="Spring Boot.PastebinApplication" />
+        <item itemvalue="Shell Script.deploy.sh" />
         <item itemvalue="Application.Test" />
         <item itemvalue="Shell Script.start.sh" />
         <item itemvalue="Shell Script.curl.sh" />
@@ -459,6 +463,55 @@
       <workItem from="1711101640902" duration="2701000" />
       <workItem from="1711122213706" duration="781000" />
       <workItem from="1711190242654" duration="5054000" />
+      <workItem from="1723316341991" duration="142000" />
+      <workItem from="1723316493519" duration="863000" />
+      <workItem from="1723402777335" duration="748000" />
+      <workItem from="1723979320115" duration="822000" />
+      <workItem from="1726166392374" duration="7000" />
+      <workItem from="1726166636772" duration="6000" />
+      <workItem from="1726166672979" duration="10000" />
+      <workItem from="1726166689564" duration="511000" />
+      <workItem from="1726238353661" duration="63000" />
+      <workItem from="1726783570877" duration="141000" />
+      <workItem from="1732196793177" duration="31000" />
+      <workItem from="1733751044265" duration="343000" />
+      <workItem from="1733751404809" duration="16000" />
+      <workItem from="1733771945486" duration="76000" />
+      <workItem from="1734039812892" duration="127000" />
+      <workItem from="1734040880773" duration="2374000" />
+      <workItem from="1734177592547" duration="22000" />
+      <workItem from="1734185439574" duration="20000" />
+      <workItem from="1734206866339" duration="836000" />
+      <workItem from="1734266544428" duration="183000" />
+      <workItem from="1734465001340" duration="720000" />
+      <workItem from="1734577190805" duration="34000" />
+      <workItem from="1735207275337" duration="201000" />
+      <workItem from="1735405666282" duration="49000" />
+      <workItem from="1736470991179" duration="3970000" />
+      <workItem from="1736507110860" duration="603000" />
+      <workItem from="1736537972831" duration="613000" />
+      <workItem from="1736606964307" duration="292000" />
+      <workItem from="1736611331462" duration="27000" />
+      <workItem from="1736653872192" duration="753000" />
+      <workItem from="1736845198431" duration="35000" />
+      <workItem from="1737663392740" duration="1227000" />
+      <workItem from="1737665114857" duration="11000" />
+      <workItem from="1737683044256" duration="70000" />
+      <workItem from="1737702649333" duration="929000" />
+      <workItem from="1738147107835" duration="819000" />
+      <workItem from="1738154017842" duration="26000" />
+      <workItem from="1743367689552" duration="110000" />
+      <workItem from="1744829219778" duration="65000" />
+      <workItem from="1744829386278" duration="14000" />
+      <workItem from="1745759642603" duration="16000" />
+      <workItem from="1745760028019" duration="68000" />
+      <workItem from="1745760258559" duration="574000" />
+      <workItem from="1745765592970" duration="56000" />
+      <workItem from="1746541299033" duration="664000" />
+      <workItem from="1749561330849" duration="162000" />
+      <workItem from="1750326815480" duration="3649000" />
+      <workItem from="1750337228105" duration="1228000" />
+      <workItem from="1750352816349" duration="7582000" />
     </task>
     <servers />
   </component>

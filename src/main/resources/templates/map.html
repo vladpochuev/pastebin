@@ -132,12 +132,12 @@
             <div class="info_id">
                 <img th:src="@{images/id_icon.png}" alt="id_icon" height="18px">
                 <span class="info_id_text"></span>
-                <span class="link_icons">
-                            <img th:src='@{images/link-icon-grey.png}' class="link_icon" height='16px' width='16px'
-                                 alt='copy link'>
-                            <img th:src='@{images/link-icon-active.png}' class='link_icon_active' height='16px'
-                                 width='16px' alt='copy link' onclick="copyUrl($('.info_id_text').text())">
-                    </span>
+            </div>
+            <div>
+                <div class="link_icon_wrapper" onclick="copyUrl($('.info_id_text').text())">
+                    <img th:src='@{images/link-icon-grey.png}' class="link_icon" alt="copy link" />
+                    <img th:src='@{images/link-icon-active.png}' class="link_icon_active" alt="copy link" />
+                </div>
             </div>
         </div>
         <p class="show__message"></p>
